@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Steven's Instructor Command Center - Week 2 A/B v0.7</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="break-overlay" id="breakOverlay" aria-hidden="true">
+    <div class="break-card">
+      <div class="break-mark" aria-hidden="true">
+        <span></span>
+      </div>
+      <p class="eyebrow">Reset Break</p>
+      <h2>Break Started</h2>
+      <div class="break-time" data-timer>05:00</div>
+      <p>Steven: breathe, reset, and check the next activity. Students: move, hydrate, and return ready.</p>
+      <button class="btn btn-primary" type="button" data-action="hide-break">Return to Command Center</button>
+    </div>
+  </div>
+
+  <div class="app-shell" id="app">
+    <aside class="sidebar" aria-label="Session navigation">
+      <div class="brand">
+        <div class="brand-shield" aria-hidden="true">
+          <svg viewBox="0 0 64 64" role="img">
+            <path d="M32 5 55 13v16c0 15-9 25-23 31C18 54 9 44 9 29V13L32 5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M29 17h6v10h10v6H35v14h-6V33H19v-6h10V17Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Steven's Instructor Command Center</strong>
+          <span>Week 2 A/B v0.7</span>
+        </div>
+      </div>
+
+      <section class="side-section" aria-labelledby="sessionControls">
+        <h2 id="sessionControls">Session Controls</h2>
+        <p>Group</p>
+        <div class="segmented" role="group" aria-label="Group rotation">
+          <button class="control-tile active" type="button" data-action="set-group" data-group="A">
+            <span data-icon="users"></span>
+            <strong>Group A</strong>
+            <small>Mon-Tue</small>
+          </button>
+          <button class="control-tile" type="button" data-action="set-group" data-group="B">
+            <span data-icon="users"></span>
+            <strong>Group B</strong>
+            <small>Wed-Thu</small>
+          </button>
+        </div>
+        <p>Day</p>
+        <div class="segmented" role="group" aria-label="Lesson day">
+          <button class="control-tile active teal" type="button" data-action="set-day" data-day="1">
+            <span data-icon="calendar"></span>
+            <strong>Day 1</strong>
+            <small id="dayOneLabel">Mon</small>
+          </button>
+          <button class="control-tile" type="button" data-action="set-day" data-day="2">
+            <span data-icon="calendar"></span>
+            <strong>Day 2</strong>
+            <small id="dayTwoLabel">Tue</small>
+          </button>
+        </div>
+      </section>
+
+      <nav class="side-nav" aria-label="Command tabs">
+        <button class="nav-button active" type="button" data-action="set-tab" data-tab="instructor"><span data-icon="monitor"></span>Instructor View</button>
+        <button class="nav-button" type="button" data-action="set-tab" data-tab="student"><span data-icon="student"></span>Student View</button>
+        <button class="nav-button" type="button" data-action="set-tab" data-tab="prep"><span data-icon="printer"></span>Print &amp; Prep</button>
+        <button class="nav-button" type="button" data-action="set-tab" data-tab="games"><span data-icon="gamepad"></span>Games</button>
+        <button class="nav-button" type="button" data-action="set-tab" data-tab="pivot"><span data-icon="shuffle"></span>Pivot Menu</button>
+        <button class="nav-button" type="button" data-action="set-tab" data-tab="resources"><span data-icon="book"></span>Resources</button>
+        <button class="nav-button" type="button" data-action="set-tab" data-tab="debrief"><span data-icon="clipboard"></span>Debrief</button>
+      </nav>
+
+      <div class="progress-card">
+        <p>Course Progress</p>
+        <div class="progress-row">
+          <div class="progress-ring">25%</div>
+          <div>
+            <strong>Week 2 of 8</strong>
+            <span>Complete</span>
+          </div>
+        </div>
+        <div class="progress-track"><span></span></div>
+      </div>
+    </aside>
+
+    <div class="workspace-shell">
+      <header class="topbar">
+        <div class="title-block">
+          <h1>Steven's Instructor Command Center</h1>
+          <p id="subtitle">Week 2: Respiratory + Anaphylaxis | Group A (Mon-Tue)</p>
+        </div>
+        <div class="top-actions">
+          <button class="top-button" type="button" data-action="set-tab" data-tab="student"><span data-icon="monitor"></span>Classroom Display</button>
+          <button class="top-button compact" type="button" id="soundButton" data-action="toggle-sound"><span data-icon="volume"></span>Sound On</button>
+          <button class="top-button compact" type="button" data-action="fullscreen"><span data-icon="expand"></span>Fullscreen</button>
+          <div class="profile" aria-label="Instructor profile">
+            <div class="avatar">S</div>
+            <div>
+              <strong>Steven</strong>
+              <span>Instructor</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="content" tabindex="-1"></main>
+
+      <footer class="footer">
+        <span><span data-icon="lightbulb"></span> Tip: Use the Classroom Display button to show the current activity and timer to students.</span>
+        <span>Need help? <button type="button" data-action="set-tab" data-tab="resources">View Instructor Guide</button></span>
+      </footer>
+    </div>
+  </div>
+
+  <div class="print-only" id="printArea"></div>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
