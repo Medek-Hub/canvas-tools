@@ -296,13 +296,13 @@
   const classEndMinutes = 12 * 60;
   const layoutTuningKey = "stevens-command-center-layout-tuning-v0.7";
   const layoutControls = [
-    { key: "sidebarWidth", label: "Sidebar", variable: "--sidebar-width", min: 200, max: 280, defaultValue: 224 },
-    { key: "logoBox", label: "Logo box", variable: "--logo-box", min: 78, max: 150, defaultValue: 112 },
-    { key: "logoImage", label: "Logo image", variable: "--logo-img", min: 74, max: 146, defaultValue: 108 },
-    { key: "previewWidth", label: "Preview", variable: "--preview-column-width", min: 260, max: 360, defaultValue: 302 },
-    { key: "rightRail", label: "Right rail", variable: "--right-column-width", min: 285, max: 380, defaultValue: 330 },
-    { key: "timerButtons", label: "Timer buttons", variable: "--timer-controls-width", min: 118, max: 210, defaultValue: 154 },
-    { key: "appGap", label: "Main gap", variable: "--app-gap", min: 8, max: 28, defaultValue: 18 }
+    { key: "sidebarWidth", label: "Sidebar", variable: "--sidebar-width", min: 200, max: 280, defaultValue: 234 },
+    { key: "logoBox", label: "Logo box", variable: "--logo-box", min: 78, max: 150, defaultValue: 150 },
+    { key: "logoImage", label: "Logo image", variable: "--logo-img", min: 74, max: 146, defaultValue: 146 },
+    { key: "previewWidth", label: "Preview", variable: "--preview-column-width", min: 260, max: 360, defaultValue: 360 },
+    { key: "rightRail", label: "Right rail", variable: "--right-column-width", min: 285, max: 380, defaultValue: 317 },
+    { key: "timerButtons", label: "Timer buttons", variable: "--timer-controls-width", min: 118, max: 210, defaultValue: 138 },
+    { key: "appGap", label: "Main gap", variable: "--app-gap", min: 8, max: 28, defaultValue: 19 }
   ];
 
   const resources = [

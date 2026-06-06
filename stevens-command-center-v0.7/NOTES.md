@@ -24,6 +24,13 @@
   - open `index.html?tune=1` or `http://127.0.0.1:8027/?tune=1`
   - adjust sidebar width, logo size, preview width, right rail width, timer button width, and main gap
   - copy exported JSON so the chosen proportions can be hard-coded later
+- Hard-coded the first accepted layout tuning payload:
+  - sidebar width: 234px
+  - logo box/image: 150px / 146px
+  - preview width: 360px
+  - right rail: 317px
+  - timer buttons: 138px
+  - main gap: 19px
 - Preserved the A/B rotation:
   - Group A = Monday/Tuesday
   - Group B = Wednesday/Thursday

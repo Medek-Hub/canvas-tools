@@ -29,13 +29,13 @@
   --shadow: 0 6px 20px rgba(7, 23, 53, 0.06);
   --shadow-soft: 0 8px 18px rgba(7, 23, 53, 0.07);
   --radius: 8px;
-  --sidebar-width: 224px;
-  --app-gap: 18px;
-  --logo-box: 112px;
-  --logo-img: 108px;
-  --right-column-width: 330px;
-  --preview-column-width: 302px;
-  --timer-controls-width: 154px;
+  --sidebar-width: 234px;
+  --app-gap: 19px;
+  --logo-box: 150px;
+  --logo-img: 146px;
+  --right-column-width: 317px;
+  --preview-column-width: 360px;
+  --timer-controls-width: 138px;
 }
 
 * {
@@ -1672,8 +1672,8 @@ svg {
 
 @media (max-height: 820px) {
   :root {
-    --logo-box: 92px;
-    --logo-img: 88px;
+    --logo-box: 150px;
+    --logo-img: 146px;
   }
 
   .app-shell {
@@ -2300,11 +2300,11 @@ svg {
 
 @media (max-width: 1460px) {
   :root {
-    --sidebar-width: 214px;
-    --app-gap: 14px;
-    --right-column-width: 300px;
-    --preview-column-width: 286px;
-    --timer-controls-width: 144px;
+    --sidebar-width: 234px;
+    --app-gap: 19px;
+    --right-column-width: 317px;
+    --preview-column-width: 360px;
+    --timer-controls-width: 138px;
   }
 
   .sidebar {
@@ -2327,7 +2327,7 @@ svg {
 
 @media (max-width: 1220px) {
   :root {
-    --sidebar-width: 208px;
+    --sidebar-width: 234px;
   }
 
   body {
