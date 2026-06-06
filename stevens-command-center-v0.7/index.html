@@ -117,5 +117,14 @@
   <div class="print-only" id="printArea"></div>
 
   <script src="assets/js/app.js"></script>
+  <script>
+    window.setTimeout(function () {
+      var pagerText = document.querySelector('.pager span');
+      var previousButton = document.querySelector('[data-action="prev-activity"]');
+      if (pagerText && previousButton && /^2\s+of\s+/i.test(pagerText.textContent.trim())) {
+        previousButton.click();
+      }
+    }, 0);
+  </script>
 </body>
 </html>
