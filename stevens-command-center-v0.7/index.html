@@ -118,13 +118,26 @@
 
   <script src="assets/js/app.js"></script>
   <script>
-    window.setTimeout(function () {
-      var pagerText = document.querySelector('.pager span');
-      var previousButton = document.querySelector('[data-action="prev-activity"]');
-      if (pagerText && previousButton && /^2\s+of\s+/i.test(pagerText.textContent.trim())) {
-        previousButton.click();
+    (function () {
+      var fixed = false;
+      var attempts = 0;
+      function startOnFirstActivity() {
+        if (fixed || attempts > 40) {
+          return;
+        }
+        attempts += 1;
+        var pagerText = document.querySelector('.pager span');
+        var previousButton = document.querySelector('[data-action="prev-activity"]');
+        if (pagerText && previousButton && /^2\s+of\s+/i.test(pagerText.textContent.trim())) {
+          fixed = true;
+          previousButton.click();
+          return;
+        }
+        window.setTimeout(startOnFirstActivity, 100);
       }
-    }, 0);
+      startOnFirstActivity();
+      window.addEventListener('load', startOnFirstActivity);
+    })();
   </script>
 </body>
 </html>
