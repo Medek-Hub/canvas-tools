@@ -1,0 +1,16 @@
+{
+  "name": "kai-secure-endpoint",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private Ask Kai endpoint template for Steven's Instructor Command Center.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "openai": "^4.77.0"
+  }
+}

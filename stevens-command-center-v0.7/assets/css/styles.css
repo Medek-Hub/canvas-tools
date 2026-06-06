@@ -1705,6 +1705,19 @@ svg {
   gap: 8px;
 }
 
+.kai-connection-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  margin: 10px 0 8px;
+}
+
+.kai-connection-actions .btn,
+.kai-endpoint-row .btn {
+  justify-content: center;
+  white-space: nowrap;
+}
+
 .kai-endpoint-row input,
 .kai-composer textarea {
   width: 100%;
@@ -2977,7 +2990,9 @@ svg {
   .side-nav,
   .choice-grid,
   .squad-scores,
-  .squad-picker {
+  .squad-picker,
+  .kai-endpoint-row,
+  .kai-connection-actions {
     grid-template-columns: 1fr;
   }
 

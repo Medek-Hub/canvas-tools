@@ -316,12 +316,27 @@
     ["Research Search", "PubMed search: prehospital anaphylaxis epinephrine", "https://pubmed.ncbi.nlm.nih.gov/?term=prehospital+anaphylaxis+epinephrine"]
   ];
 
-  function getKaiEndpoint() {
-    return window.KAI_CHAT_ENDPOINT || localStorage.getItem("kaiChatEndpoint") || "";
+  const defaultKaiEndpoint = window.KAI_CHAT_ENDPOINT || "http://127.0.0.1:8787/api/kai";
+  const defaultKaiUsername = "Steven";
+
+  function storedKaiEndpoint() {
+    return localStorage.getItem("kaiChatEndpoint") || defaultKaiEndpoint;
   }
 
-  function getKaiAccessToken() {
-    return localStorage.getItem("kaiAccessToken") || "";
+  function storedKaiUsername() {
+    return localStorage.getItem("kaiUsername") || defaultKaiUsername;
+  }
+
+  function getKaiEndpoint() {
+    return state.kaiEndpoint || storedKaiEndpoint();
+  }
+
+  function getKaiUsername() {
+    return state.kaiUsername || storedKaiUsername();
+  }
+
+  function getKaiAccessCode() {
+    return state.kaiAccessCode || "";
   }
 
   const gameLinks = [
@@ -455,6 +470,10 @@
     agendaOpen: false,
     kaiOpen: false,
     kaiSending: false,
+    kaiTesting: false,
+    kaiEndpoint: storedKaiEndpoint(),
+    kaiUsername: storedKaiUsername(),
+    kaiAccessCode: "",
     kaiInput: "",
     kaiMessages: [
       {
@@ -902,7 +921,8 @@
       return;
     }
     const endpoint = getKaiEndpoint();
-    const token = getKaiAccessToken();
+    const username = getKaiUsername();
+    const accessCode = getKaiAccessCode();
     const context = buildKaiContext();
     host.innerHTML = `
       <div class="kai-overlay" role="presentation">
@@ -912,7 +932,7 @@
             <div>
               <p class="panel-kicker">Ask Kai</p>
               <h2 id="kaiTitle">Kai Course Assistant</h2>
-              <p>${endpoint && token ? "Endpoint and access token saved." : "Endpoint and Steven access token required."}</p>
+              <p>${endpoint && username && accessCode ? "Ready to ask through Mauro's endpoint." : "Enter the endpoint, username, and access code for this session."}</p>
             </div>
             <button class="btn btn-ghost" type="button" data-action="close-kai" aria-label="Close Ask Kai"><span data-icon="close"></span>Close</button>
           </header>
@@ -925,16 +945,24 @@
           </section>
 
           <section class="kai-connection-card">
-            <label for="kaiEndpointInput">Kai endpoint</label>
+            <label for="kaiEndpointInput">Kai Endpoint URL</label>
             <div class="kai-endpoint-row">
-              <input id="kaiEndpointInput" data-role="kai-endpoint" value="${escapeHTML(endpoint)}" placeholder="https://your-domain.com/api/kai-chat">
+              <input id="kaiEndpointInput" data-role="kai-endpoint" value="${escapeHTML(endpoint)}" placeholder="http://127.0.0.1:8787/api/kai" autocomplete="off">
             </div>
-            <label for="kaiTokenInput">Steven access token</label>
+            <label for="kaiUsernameInput">Username</label>
             <div class="kai-endpoint-row">
-              <input id="kaiTokenInput" data-role="kai-token" type="password" value="${escapeHTML(token)}" placeholder="Paste Steven's private access token" autocomplete="off">
-              <button class="btn btn-ghost" type="button" data-action="save-kai-endpoint">Save Login</button>
+              <input id="kaiUsernameInput" data-role="kai-username" value="${escapeHTML(username)}" placeholder="Steven" autocomplete="username">
             </div>
-            <p>Saved only in this browser. The endpoint must validate this token before calling Kai.</p>
+            <label for="kaiAccessCodeInput">Access Code</label>
+            <div class="kai-endpoint-row">
+              <input id="kaiAccessCodeInput" data-role="kai-access-code" type="password" value="${escapeHTML(accessCode)}" placeholder="Paste access code" autocomplete="off">
+              <button class="btn btn-ghost" type="button" data-action="clear-kai-code">Clear Access Code</button>
+            </div>
+            <div class="kai-connection-actions">
+              <button class="btn btn-ghost" type="button" data-action="save-kai-endpoint">Save Endpoint</button>
+              <button class="btn btn-primary" type="button" data-action="test-kai-connection" ${state.kaiTesting ? "disabled" : ""}>${state.kaiTesting ? "Testing..." : "Test Connection"}</button>
+            </div>
+            <p>Access code stays only in this open page. Refreshing the dashboard clears it.</p>
           </section>
 
           <section class="kai-chat-log" aria-live="polite">
@@ -1824,22 +1852,45 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
     URL.revokeObjectURL(url);
   }
 
-  function saveKaiEndpoint() {
-    const endpoint = document.querySelector("[data-role='kai-endpoint']")?.value.trim() || "";
-    const token = document.querySelector("[data-role='kai-token']")?.value.trim() || "";
-    if (endpoint) {
-      localStorage.setItem("kaiChatEndpoint", endpoint);
-    } else {
-      localStorage.removeItem("kaiChatEndpoint");
+  function syncKaiConnectionFromInputs() {
+    const endpointInput = document.querySelector("[data-role='kai-endpoint']");
+    const usernameInput = document.querySelector("[data-role='kai-username']");
+    const accessCodeInput = document.querySelector("[data-role='kai-access-code']");
+    if (endpointInput) {
+      state.kaiEndpoint = endpointInput.value.trim();
     }
-    if (token) {
-      localStorage.setItem("kaiAccessToken", token);
-    } else {
-      localStorage.removeItem("kaiAccessToken");
+    if (usernameInput) {
+      state.kaiUsername = usernameInput.value.trim();
+    }
+    if (accessCodeInput) {
+      state.kaiAccessCode = accessCodeInput.value.trim();
+    }
+  }
+
+  function saveKaiEndpoint() {
+    syncKaiConnectionFromInputs();
+    const endpoint = getKaiEndpoint() || defaultKaiEndpoint;
+    const username = getKaiUsername() || defaultKaiUsername;
+    state.kaiEndpoint = endpoint;
+    state.kaiUsername = username;
+    localStorage.setItem("kaiChatEndpoint", endpoint);
+    localStorage.setItem("kaiUsername", username);
+    state.kaiMessages.push({
+      role: "kai",
+      text: "Endpoint and username saved for this browser. Access code stays only in this open page."
+    });
+    renderKaiOverlay();
+  }
+
+  function clearKaiAccessCode() {
+    state.kaiAccessCode = "";
+    const accessCodeInput = document.querySelector("[data-role='kai-access-code']");
+    if (accessCodeInput) {
+      accessCodeInput.value = "";
     }
     state.kaiMessages.push({
       role: "kai",
-      text: endpoint && token ? "Kai endpoint and Steven access token saved for this browser." : "Kai login updated. Add both an endpoint and access token before live generation."
+      text: "Access code cleared from this page."
     });
     renderKaiOverlay();
   }
@@ -1854,20 +1905,84 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
     renderKaiOverlay();
   }
 
+  function kaiHealthEndpoint(endpoint) {
+    try {
+      const url = new URL(endpoint, window.location.href);
+      url.pathname = url.pathname.replace(/\/api\/kai\/?$/, "/api/health");
+      if (!/\/api\/health\/?$/.test(url.pathname)) {
+        url.pathname = "/api/health";
+      }
+      url.search = "";
+      url.hash = "";
+      return url.toString();
+    } catch (error) {
+      return (endpoint || defaultKaiEndpoint).replace(/\/api\/kai\/?$/, "/api/health");
+    }
+  }
+
+  async function readKaiJSON(response) {
+    try {
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function kaiErrorMessage(status) {
+    if (status === 401 || status === 403) {
+      return "Ask Kai access is currently unavailable.";
+    }
+    return "Kai request failed. Ask Mauro to check the Kai server.";
+  }
+
+  async function testKaiConnection() {
+    if (state.kaiTesting) {
+      return;
+    }
+    syncKaiConnectionFromInputs();
+    state.kaiTesting = true;
+    renderKaiOverlay();
+    try {
+      const response = await fetch(kaiHealthEndpoint(getKaiEndpoint()), {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        cache: "no-store"
+      });
+      const data = await readKaiJSON(response);
+      if (!response.ok || data?.ok === false) {
+        throw new Error("Health check failed");
+      }
+      state.kaiMessages.push({
+        role: "kai",
+        text: "Kai endpoint online."
+      });
+    } catch (error) {
+      state.kaiMessages.push({
+        role: "kai",
+        text: "Kai endpoint is not running. Ask Mauro to start the Kai server."
+      });
+    } finally {
+      state.kaiTesting = false;
+      renderKaiOverlay();
+    }
+  }
+
   async function sendKaiMessage() {
     const input = document.querySelector("[data-role='kai-input']");
     const text = input?.value.trim() || "";
     if (!text || state.kaiSending) {
       return;
     }
+    syncKaiConnectionFromInputs();
     state.kaiInput = "";
     state.kaiMessages.push({ role: "steven", text });
     const endpoint = getKaiEndpoint();
-    const token = getKaiAccessToken();
-    if (!endpoint || !token) {
+    const username = getKaiUsername() || defaultKaiUsername;
+    const accessCode = getKaiAccessCode();
+    if (!endpoint || !username || !accessCode) {
       state.kaiMessages.push({
         role: "kai",
-        text: "I need the Kai endpoint and Steven access token before I can generate live content here. Paste both above, or copy the source context and send it to Kai manually for now."
+        text: "Enter the endpoint URL, username, and access code to use Ask Kai."
       });
       renderKaiOverlay();
       return;
@@ -1879,26 +1994,32 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${accessCode}`,
+          "X-Kai-User": username
         },
         body: JSON.stringify({
+          username,
           message: text,
-          history: state.kaiMessages.slice(-10),
-          context: buildKaiContext()
+          context: buildKaiContext(),
+          source: "Steven dashboard"
         })
       });
-      if (!response.ok) {
-        throw new Error(`Kai endpoint returned ${response.status}`);
+      const data = await readKaiJSON(response);
+      if (!response.ok || !data?.ok) {
+        state.kaiMessages.push({
+          role: "kai",
+          text: kaiErrorMessage(response.status)
+        });
+        return;
       }
-      const data = await response.json();
       state.kaiMessages.push({
         role: "kai",
-        text: data.reply || data.message || data.text || "Kai responded, but the endpoint did not return a reply field."
+        text: data.answer || "Kai responded, but the endpoint did not return an answer."
       });
     } catch (error) {
       state.kaiMessages.push({
         role: "kai",
-        text: `Connection issue: ${error.message}. Check the endpoint URL, CORS, and server logs.`
+        text: "Dashboard is blocked from reaching the Kai endpoint. Ask Mauro to check the connection."
       });
     } finally {
       state.kaiSending = false;
@@ -1932,6 +2053,10 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
       renderKaiOverlay();
     } else if (action === "save-kai-endpoint") {
       saveKaiEndpoint();
+    } else if (action === "test-kai-connection") {
+      testKaiConnection();
+    } else if (action === "clear-kai-code") {
+      clearKaiAccessCode();
     } else if (action === "copy-kai-context") {
       copyKaiContext();
     } else if (action === "fullscreen") {
@@ -2048,6 +2173,15 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
     }
     if (target.matches("[data-role='kai-input']")) {
       state.kaiInput = target.value;
+    }
+    if (target.matches("[data-role='kai-endpoint']")) {
+      state.kaiEndpoint = target.value.trim();
+    }
+    if (target.matches("[data-role='kai-username']")) {
+      state.kaiUsername = target.value.trim();
+    }
+    if (target.matches("[data-role='kai-access-code']")) {
+      state.kaiAccessCode = target.value.trim();
     }
     if (target.matches("[data-action='confidence']")) {
       state.game.confidence = Number(target.value);
