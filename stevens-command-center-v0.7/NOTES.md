@@ -61,14 +61,14 @@
   - clinical reasoning boxes
   - compact tables
   - lined writing areas
-- Rebuilt the games tab into an ADME-style classroom mode:
-  - colorful arcade surface
-  - large touch targets
-  - stage progression
-  - squad score
-  - boss health
-  - retro WebAudio sounds
-  - JSON metrics payload download
+- Rebuilt the games tab into a clean classroom game launcher:
+  - white dashboard-style game cards
+  - large launch buttons that open games in a new browser tab/window
+  - GitHub Pages links for Airway Math Arena, ADME Arena Complete, and Drug Suffix Game
+- Published the added game pages into the GitHub Pages checkout:
+  - `airway_math_arena_squad_battle_v4_no_spoiler.html`
+  - `adme_arena_complete.html`
+  - `drug_suffix_game.html`
 - Added interactive Room Energy behavior:
   - green, yellow, and red state buttons
   - gauge needle movement

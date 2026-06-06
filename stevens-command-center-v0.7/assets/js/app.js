@@ -15,6 +15,7 @@
     volume: '<svg class="icon" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>',
     volumeOff: '<svg class="icon" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5Z"></path><path d="M22 9 16 15"></path><path d="m16 9 6 6"></path></svg>',
     expand: '<svg class="icon" viewBox="0 0 24 24"><path d="M8 3H3v5"></path><path d="M16 3h5v5"></path><path d="M21 16v5h-5"></path><path d="M3 16v5h5"></path></svg>',
+    external: '<svg class="icon" viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>',
     lightbulb: '<svg class="icon" viewBox="0 0 24 24"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7c.7.5 1 1.2 1 2.1V17h6v-.2c0-.9.4-1.6 1-2.1A7 7 0 0 0 12 2Z"></path></svg>',
     play: '<svg class="icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"></path></svg>',
     pause: '<svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14"></path><path d="M16 5v14"></path></svg>',
@@ -312,6 +313,30 @@
     ["Instructor Search", "YouTube search: beta-2 agonist bronchodilation", "https://www.youtube.com/results?search_query=beta+2+agonist+mechanism+bronchodilation"],
     ["Teaching Ideas", "MERLOT health sciences learning materials", "https://www.merlot.org/merlot/materials.htm?category=2601"],
     ["Research Search", "PubMed search: prehospital anaphylaxis epinephrine", "https://pubmed.ncbi.nlm.nih.gov/?term=prehospital+anaphylaxis+epinephrine"]
+  ];
+
+  const gameLinks = [
+    {
+      title: "Airway Math Arena",
+      tag: "Squad Battle",
+      icon: "&#128640;",
+      url: "https://medek-hub.github.io/canvas-tools/airway_math_arena_squad_battle_v4_no_spoiler.html",
+      details: ["No-spoiler airway math arena", "Large touch controls", "Squad scoring"]
+    },
+    {
+      title: "ADME Arena Complete",
+      tag: "Boss Run",
+      icon: "&#9889;",
+      url: "https://medek-hub.github.io/canvas-tools/adme_arena_complete.html",
+      details: ["ADME stage map", "Squad touch mode", "Downloadable metrics"]
+    },
+    {
+      title: "Drug Suffix Game",
+      tag: "Medication Patterns",
+      icon: "&#128138;",
+      url: "https://medek-hub.github.io/canvas-tools/drug_suffix_game.html",
+      details: ["Suffix matching", "Drug family recall", "Fast classroom review"]
+    }
   ];
 
   const energyModes = {
@@ -1012,6 +1037,57 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
   }
 
   function renderGames() {
+    return `
+      <section class="game-launcher-view" aria-label="Classroom game launcher">
+        <div class="game-launcher-shell">
+          <header class="game-launcher-head">
+            <div>
+              <p class="eyebrow">Games</p>
+              <h2>Classroom Game Library</h2>
+              <p>Steven can launch the current classroom games from GitHub Pages.</p>
+            </div>
+            <div class="game-library-status">
+              <span data-icon="gamepad"></span>
+              <strong>3</strong>
+              <small>Ready Games</small>
+            </div>
+          </header>
+
+          <div class="game-launcher-grid">
+            ${gameLinks.map((game) => `
+              <article class="game-launcher-card">
+                <div class="game-launcher-card-top">
+                  <span class="game-launcher-icon" aria-hidden="true">${game.icon}</span>
+                  <span class="game-launcher-tag">${escapeHTML(game.tag)}</span>
+                </div>
+                <h3>${escapeHTML(game.title)}</h3>
+                <ul class="game-feature-list">
+                  ${game.details.map((detail) => `<li>${escapeHTML(detail)}</li>`).join("")}
+                </ul>
+                <a class="game-launcher-button" href="${game.url}" target="_blank" rel="noopener">
+                  <span data-icon="external"></span>
+                  Open ${escapeHTML(game.title)}
+                </a>
+              </article>
+            `).join("")}
+          </div>
+
+          <div class="game-prep-strip">
+            <article>
+              <h3>Instructor Prep</h3>
+              <p>Use games after the main scenario or as a room-energy pivot when the class needs movement and fast feedback.</p>
+            </article>
+            <article>
+              <h3>Metrics Note</h3>
+              <p>Airway Math Arena and ADME Arena are built for squad scoring. Download game metrics directly from the game screen when available.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderEmbeddedGame() {
     const game = state.game;
     const stage = gameStages[game.stageIndex];
     return `
