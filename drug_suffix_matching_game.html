@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Common Drug Suffixes Matching Game</title>
+  <style>
+    :root {
+      --bg: #f3f5f8;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #667085;
+      --border: #d6dbe5;
+      --tile: #eef2f7;
+      --tile-border: #cfd6e2;
+      --selected: #2563eb;
+      --selected-dark: #1d4ed8;
+      --correct: #16a34a;
+      --correct-dark: #15803d;
+      --wrong: #dc2626;
+      --wrong-dark: #b91c1c;
+      --warning: #fff7ed;
+      --warning-border: #fed7aa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 22px rgba(16, 24, 40, 0.06);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      box-shadow: 0 5px 14px rgba(16, 24, 40, 0.05);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .message {
+      background: var(--warning);
+      border: 1px solid var(--warning-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+    }
+
+    .message.success {
+      background: #ecfdf3;
+      border-color: #86efac;
+      color: #14532d;
+    }
+
+    .message.error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #7f1d1d;
+    }
+
+    .game {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 22px rgba(16, 24, 40, 0.06);
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.2rem;
+    }
+
+    .tiles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-content: flex-start;
+    }
+
+    .tile {
+      appearance: none;
+      border: 2px solid var(--tile-border);
+      background: var(--tile);
+      color: var(--ink);
+      border-radius: 13px;
+      padding: 12px 15px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      min-height: 48px;
+      text-align: center;
+    }
+
+    .tile:hover:not(.locked) {
+      transform: translateY(-1px);
+      border-color: #94a3b8;
+      box-shadow: 0 5px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .tile.selected {
+      background: var(--selected);
+      border-color: var(--selected-dark);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
+    }
+
+    .tile.correct,
+    .tile.locked {
+      background: var(--correct);
+      border-color: var(--correct-dark);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.18);
+      cursor: default;
+    }
+
+    .tile.wrong {
+      background: var(--wrong);
+      border-color: var(--wrong-dark);
+      color: #fff;
+      animation: shake 0.28s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .control-btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      background: #111827;
+      color: #fff;
+    }
+
+    .control-btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 850px) {
+      .wrap { padding: 14px; }
+      .status-row { grid-template-columns: repeat(2, 1fr); }
+      .game { grid-template-columns: 1fr; }
+      .tile { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="header">
+      <h1>Common Drug Suffixes</h1>
+      <p class="subtitle">Select a suffix on the left, then select the drug family it belongs to on the right. Correct matches turn green and stay highlighted. Wrong matches flash red, then reset so you can keep trying.</p>
+    </section>
+
+    <section class="status-row" aria-label="Game status">
+      <div class="stat">
+        <div class="stat-label">Correct</div>
+        <div class="stat-value" id="correctCount">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Remaining</div>
+        <div class="stat-value" id="remainingCount">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Attempts</div>
+        <div class="stat-value" id="attemptCount">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Accuracy</div>
+        <div class="stat-value" id="accuracyCount">100%</div>
+      </div>
+    </section>
+
+    <div class="message" id="message">Start by choosing one medication suffix.</div>
+
+    <section class="game">
+      <div class="panel">
+        <h2>Suffixes</h2>
+        <div class="tiles" id="suffixTiles"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Drug Families</h2>
+        <div class="tiles" id="familyTiles"></div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="control-btn" id="resetBtn">Reset Game</button>
+      <button class="control-btn secondary" id="shuffleBtn">Shuffle</button>
+    </div>
+
+    <p class="note">Teaching note: drug suffixes are pattern clues, not a replacement for checking the medication, patient condition, contraindications, dose, route, and local protocol.</p>
+  </main>
+
+  <script>
+    const pairs = [
+      { suffix: "-azole", family: "Antifungal" },
+      { suffix: "-lam", family: "Benzodiazepine" },
+      { suffix: "-vir", family: "Antiviral" },
+      { suffix: "-afil", family: "Erectile Dysfunction" },
+      { suffix: "-pram", family: "SSRI" },
+      { suffix: "-prazole", family: "Proton Pump Inhibitor" },
+      { suffix: "-ase", family: "Thrombolytic" },
+      { suffix: "-zine", family: "Antiemetic" },
+      { suffix: "-asone", family: "Corticosteroid" },
+      { suffix: "-statin", family: "Antilipidemic" },
+      { suffix: "-caine", family: "Anesthetics" },
+      { suffix: "-olol", family: "Beta Blocker" },
+      { suffix: "-pril", family: "ACE Inhibitor" },
+      { suffix: "-arin", family: "Anticoagulant" },
+      { suffix: "-ide", family: "Oral Hypoglycemic" },
+      { suffix: "-pam", family: "Benzodiazepine" },
+      { suffix: "-ine", family: "Antihistamine" },
+      { suffix: "-mycin", family: "Antibiotic" },
+      { suffix: "-floxacin", family: "Antibiotic" },
+      { suffix: "-tyline", family: "Tricyclic Antidepressants" },
+      { suffix: "-solone", family: "Corticosteroid" },
+      { suffix: "-dipine", family: "Calcium Channel Blocker" },
+      { suffix: "-dine", family: "Antiulcer" },
+      { suffix: "-phylline", family: "Bronchodilator" },
+      { suffix: "-cycline", family: "Antibiotic" },
+      { suffix: "-cillin", family: "Penicillin" }
+    ];
+
+    const suffixTiles = document.getElementById("suffixTiles");
+    const familyTiles = document.getElementById("familyTiles");
+    const correctCount = document.getElementById("correctCount");
+    const remainingCount = document.getElementById("remainingCount");
+    const attemptCount = document.getElementById("attemptCount");
+    const accuracyCount = document.getElementById("accuracyCount");
+    const message = document.getElementById("message");
+    const resetBtn = document.getElementById("resetBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+
+    let selectedSuffix = null;
+    let selectedFamily = null;
+    let correct = 0;
+    let attempts = 0;
+    let lockedSuffixIds = new Set();
+    let lockedFamilyIds = new Set();
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function setMessage(text, type = "normal") {
+      message.textContent = text;
+      message.className = "message";
+      if (type === "success") message.classList.add("success");
+      if (type === "error") message.classList.add("error");
+    }
+
+    function updateStats() {
+      correctCount.textContent = correct;
+      remainingCount.textContent = pairs.length - correct;
+      attemptCount.textContent = attempts;
+      const accuracy = attempts === 0 ? 100 : Math.round((correct / attempts) * 100);
+      accuracyCount.textContent = accuracy + "%";
+    }
+
+    function makeTile(text, side, id, family) {
+      const btn = document.createElement("button");
+      btn.className = "tile";
+      btn.textContent = text;
+      btn.dataset.side = side;
+      btn.dataset.id = id;
+      btn.dataset.family = family;
+      btn.type = "button";
+      btn.addEventListener("click", () => selectTile(btn));
+      return btn;
+    }
+
+    function buildGame() {
+      suffixTiles.innerHTML = "";
+      familyTiles.innerHTML = "";
+      selectedSuffix = null;
+      selectedFamily = null;
+
+      const suffixItems = shuffle(pairs.map((p, i) => ({ ...p, id: String(i) })));
+      const familyItems = shuffle(pairs.map((p, i) => ({ ...p, id: String(i) })));
+
+      suffixItems.forEach(item => {
+        suffixTiles.appendChild(makeTile(item.suffix, "suffix", item.id, item.family));
+      });
+
+      familyItems.forEach(item => {
+        familyTiles.appendChild(makeTile(item.family, "family", item.id, item.family));
+      });
+
+      updateStats();
+      setMessage("Start by choosing one medication suffix.");
+    }
+
+    function clearSideSelection(side) {
+      document.querySelectorAll(`.tile[data-side="${side}"]`).forEach(tile => {
+        if (!tile.classList.contains("locked")) tile.classList.remove("selected");
+      });
+    }
+
+    function selectTile(tile) {
+      if (tile.classList.contains("locked")) return;
+
+      const side = tile.dataset.side;
+      clearSideSelection(side);
+      tile.classList.add("selected");
+
+      if (side === "suffix") {
+        selectedSuffix = tile;
+        setMessage(`Suffix selected: ${tile.textContent}. Now choose the matching drug family.`);
+      } else {
+        selectedFamily = tile;
+        setMessage(`Family selected: ${tile.textContent}. Now choose the matching suffix.`);
+      }
+
+      if (selectedSuffix && selectedFamily) checkMatch();
+    }
+
+    function checkMatch() {
+      attempts++;
+
+      const isCorrect = selectedSuffix.dataset.family === selectedFamily.dataset.family;
+
+      if (isCorrect) {
+        correct++;
+        selectedSuffix.classList.remove("selected");
+        selectedFamily.classList.remove("selected");
+        selectedSuffix.classList.add("correct", "locked");
+        selectedFamily.classList.add("correct", "locked");
+        selectedSuffix.disabled = true;
+        selectedFamily.disabled = true;
+        lockedSuffixIds.add(selectedSuffix.dataset.id);
+        lockedFamilyIds.add(selectedFamily.dataset.id);
+
+        setMessage(`Correct — ${selectedSuffix.textContent} matches ${selectedFamily.textContent}. Keep going.`, "success");
+        selectedSuffix = null;
+        selectedFamily = null;
+
+        if (correct === pairs.length) {
+          setMessage("Excellent work — every suffix has been matched correctly.", "success");
+        }
+      } else {
+        const badSuffix = selectedSuffix;
+        const badFamily = selectedFamily;
+        badSuffix.classList.add("wrong");
+        badFamily.classList.add("wrong");
+        setMessage(`Not quite — ${badSuffix.textContent} does not match ${badFamily.textContent}. Try another combination.`, "error");
+        selectedSuffix = null;
+        selectedFamily = null;
+
+        setTimeout(() => {
+          badSuffix.classList.remove("selected", "wrong");
+          badFamily.classList.remove("selected", "wrong");
+          setMessage("No worries. Choose a suffix and try again.");
+        }, 850);
+      }
+
+      updateStats();
+    }
+
+    function resetGame() {
+      correct = 0;
+      attempts = 0;
+      lockedSuffixIds.clear();
+      lockedFamilyIds.clear();
+      buildGame();
+    }
+
+    resetBtn.addEventListener("click", resetGame);
+    shuffleBtn.addEventListener("click", resetGame);
+
+    resetGame();
+  </script>
+</body>
+</html>
