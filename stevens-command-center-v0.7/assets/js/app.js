@@ -321,21 +321,24 @@
       tag: "Squad Battle",
       icon: "&#128640;",
       url: "https://medek-hub.github.io/canvas-tools/airway_math_arena_squad_battle_v4_no_spoiler.html",
-      details: ["No-spoiler airway math arena", "Large touch controls", "Squad scoring"]
+      details: ["No-spoiler airway math arena", "Large touch controls", "Squad scoring"],
+      covered: ["Airway vs ventilation", "Breath sounds", "EtCO2 patterns", "Dose/math sprint"]
     },
     {
       title: "ADME Arena Complete",
       tag: "Boss Run",
       icon: "&#9889;",
       url: "https://medek-hub.github.io/canvas-tools/adme_arena_complete.html",
-      details: ["ADME stage map", "Squad touch mode", "Downloadable metrics"]
+      details: ["ADME stage map", "Squad touch mode", "Downloadable metrics"],
+      covered: ["Absorption", "Distribution", "Mechanism", "Evaluation"]
     },
     {
       title: "Drug Suffix Game",
       tag: "Medication Patterns",
       icon: "&#128138;",
       url: "https://medek-hub.github.io/canvas-tools/drug_suffix_game.html",
-      details: ["Suffix matching", "Drug family recall", "Fast classroom review"]
+      details: ["Suffix matching", "Drug family recall", "Fast classroom review"],
+      covered: ["Common suffixes", "Medication families", "Pattern recognition", "Recall speed"]
     }
   ];
 
@@ -1064,6 +1067,12 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
                 <ul class="game-feature-list">
                   ${game.details.map((detail) => `<li>${escapeHTML(detail)}</li>`).join("")}
                 </ul>
+                <div class="game-materials-covered">
+                  <h4>Materials Covered</h4>
+                  <div>
+                    ${game.covered.map((item) => `<span>${escapeHTML(item)}</span>`).join("")}
+                  </div>
+                </div>
                 <a class="game-launcher-button" href="${game.url}" target="_blank" rel="noopener">
                   <span data-icon="external"></span>
                   Open ${escapeHTML(game.title)}

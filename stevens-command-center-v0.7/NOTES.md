@@ -65,6 +65,8 @@
   - white dashboard-style game cards
   - large launch buttons that open games in a new browser tab/window
   - GitHub Pages links for Airway Math Arena, ADME Arena Complete, and Drug Suffix Game
+  - per-game materials-covered lists for quick instructor selection
+- Fixed the Games launcher buttons so they render as blue command buttons instead of white boxes.
 - Published the added game pages into the GitHub Pages checkout:
   - `airway_math_arena_squad_battle_v4_no_spoiler.html`
   - `adme_arena_complete.html`

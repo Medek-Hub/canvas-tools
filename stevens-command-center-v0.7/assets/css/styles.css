@@ -2052,7 +2052,7 @@ svg {
 }
 
 .game-launcher-card {
-  min-height: 310px;
+  min-height: 390px;
   display: flex;
   flex-direction: column;
   padding: 18px;
@@ -2110,7 +2110,7 @@ svg {
 .game-feature-list {
   display: grid;
   gap: 9px;
-  margin: 18px 0 20px;
+  margin: 16px 0 14px;
   padding: 0;
   list-style: none;
 }
@@ -2118,7 +2118,7 @@ svg {
 .game-feature-list li {
   position: relative;
   padding-left: 20px;
-  color: var(--ink-750);
+  color: var(--ink-650);
   font-size: 14px;
   line-height: 1.32;
   font-weight: 750;
@@ -2135,12 +2135,47 @@ svg {
   background: var(--teal-600);
 }
 
+.game-materials-covered {
+  border: 1px solid rgba(0, 91, 255, 0.18);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(0, 91, 255, 0.045), rgba(11, 128, 133, 0.06));
+  padding: 12px;
+  margin: 0 0 16px;
+}
+
+.game-materials-covered h4 {
+  margin: 0 0 9px;
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.game-materials-covered div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.game-materials-covered span {
+  border: 1px solid rgba(11, 128, 133, 0.22);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ink-800);
+  padding: 6px 9px;
+  font-size: 12px;
+  line-height: 1.1;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
 .game-launcher-button {
   min-height: 56px;
   margin-top: auto;
   border: 1px solid var(--blue-600);
   border-radius: var(--radius);
-  background: linear-gradient(180deg, var(--blue-500), var(--blue-650));
+  background: linear-gradient(180deg, var(--blue-500), var(--blue-700));
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -2154,8 +2189,19 @@ svg {
   box-shadow: 0 10px 22px rgba(0, 91, 255, 0.2);
 }
 
+.game-launcher-button:visited {
+  color: #ffffff;
+}
+
+.game-launcher-button .icon {
+  width: 19px;
+  height: 19px;
+  stroke-width: 2.5;
+}
+
 .game-launcher-button:hover {
   transform: translateY(-1px);
+  background: linear-gradient(180deg, #2f86ff, var(--blue-700));
   box-shadow: 0 14px 26px rgba(0, 91, 255, 0.24);
 }
 
