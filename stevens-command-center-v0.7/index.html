@@ -116,28 +116,6 @@
   <div id="kaiOverlay"></div>
   <div class="print-only" id="printArea"></div>
 
-  <script src="assets/js/app.js"></script>
-  <script>
-    (function () {
-      var fixed = false;
-      var attempts = 0;
-      function startOnFirstActivity() {
-        if (fixed || attempts > 40) {
-          return;
-        }
-        attempts += 1;
-        var pagerText = document.querySelector('.pager span');
-        var previousButton = document.querySelector('[data-action="prev-activity"]');
-        if (pagerText && previousButton && /^2\s+of\s+/i.test(pagerText.textContent.trim())) {
-          fixed = true;
-          previousButton.click();
-          return;
-        }
-        window.setTimeout(startOnFirstActivity, 100);
-      }
-      startOnFirstActivity();
-      window.addEventListener('load', startOnFirstActivity);
-    })();
-  </script>
+  <script src="assets/js/app.js?v=activity-start-1"></script>
 </body>
 </html>
