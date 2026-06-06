@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 2 PMS Guided Lecture — Respiratory & Anaphylaxis Pharmacology | v2 fixed diagrams</title>
+  <style>
+    :root{
+      --ink:#17324d;--blue:#2f6fae;--sky:#dff1ff;--red:#c94b4b;--gold:#f2b84b;
+      --green:#3b8a57;--mint:#e9faef;--purple:#7353a6;--paper:#fff9ee;--paper2:#f7efe1;
+      --orange:#e07a32;--shadow:rgba(27,45,62,.18);--line:rgba(23,50,77,.25);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--ink);line-height:1.62;
+      background:radial-gradient(circle at 12% 8%,rgba(242,184,75,.22),transparent 22%),
+                 radial-gradient(circle at 88% 18%,rgba(47,111,174,.18),transparent 26%),
+                 linear-gradient(135deg,#fffaf0 0%,#f6efe3 100%);
+    }
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;background-image:
+      linear-gradient(rgba(23,50,77,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(23,50,77,.028) 1px,transparent 1px);background-size:24px 24px;mix-blend-mode:multiply}
+    .page{max-width:1200px;margin:0 auto;padding:28px 18px 60px}
+    .hero{position:relative;overflow:hidden;border:5px solid var(--ink);border-radius:30px;background:
+      linear-gradient(135deg,rgba(223,241,255,.94),rgba(255,249,238,.96) 52%,rgba(255,231,184,.92));
+      box-shadow:0 18px 40px var(--shadow);padding:34px 36px 28px}
+    .hero:after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border:18px solid rgba(242,184,75,.38);border-radius:50%}
+    .badge{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:999px;padding:9px 14px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;font-size:.84rem;box-shadow:0 6px 0 rgba(23,50,77,.18)}
+    h1{font-size:clamp(2.1rem,5vw,5.1rem);line-height:.95;margin:18px 0 12px;letter-spacing:-.05em}
+    h1 .script{font-family:"Segoe Print","Comic Sans MS",cursive;color:var(--red);letter-spacing:-.06em;font-size:.72em;display:block;transform:rotate(-1deg)}
+    .subtitle{font-size:1.2rem;max-width:790px;margin:0 0 18px;font-weight:650}.hero-grid{display:grid;grid-template-columns:1.3fr .95fr;gap:22px;align-items:center}
+    .quick-card{background:rgba(255,255,255,.82);border:3px solid var(--ink);border-radius:22px;padding:18px;box-shadow:7px 7px 0 rgba(23,50,77,.12)}
+    .quick-card h3{margin:.2rem 0 .5rem;font-size:1.05rem;text-transform:uppercase;letter-spacing:.05em;color:var(--red)}
+    .pillrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.pill{border:2px solid var(--ink);border-radius:999px;padding:6px 10px;background:#fff;font-weight:850;font-size:.9rem}
+    .toc{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:20px 0 26px}.toc a{text-decoration:none;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:16px;padding:12px 8px;font-weight:900;text-align:center;box-shadow:4px 4px 0 rgba(23,50,77,.16);transition:.15s transform,.15s box-shadow}.toc a:hover{transform:translateY(-2px);box-shadow:6px 6px 0 rgba(23,50,77,.18)}
+    .section{background:rgba(255,255,255,.82);border:4px solid var(--ink);border-radius:28px;box-shadow:10px 10px 0 rgba(23,50,77,.10);padding:24px;margin:26px 0;position:relative;overflow:hidden}
+    .section h2{font-size:clamp(1.65rem,3vw,2.55rem);margin:0 0 12px;letter-spacing:-.03em}.section h2 span{font-family:"Segoe Print","Comic Sans MS",cursive;color:var(--blue);font-size:.72em;display:block;margin-bottom:2px}.section h3{margin:16px 0 8px}
+    .anchor{font-size:1.18rem;font-weight:850;background:var(--sky);border-left:9px solid var(--blue);padding:14px 16px;border-radius:16px;margin:14px 0}.mini{font-size:.92rem}.small-note{font-size:.95rem;color:#4b5a68;font-weight:650}
+    .mindset{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}.mindset .box{background:var(--paper);border:3px dashed var(--line);border-radius:18px;padding:14px}.mindset strong{display:block;color:var(--red);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}.cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.cols-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .card{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:16px;box-shadow:5px 5px 0 rgba(23,50,77,.12)}.card h3{margin:0 0 8px;font-size:1.17rem;color:var(--ink)}
+    .med-card{border-left:10px solid var(--gold)}.med-card.albuterol{border-left-color:var(--blue)}.med-card.ipratropium{border-left-color:var(--purple)}.med-card.epi{border-left-color:var(--red)}.med-card.steroid{border-left-color:var(--green)}.med-card.antihist{border-left-color:var(--orange)}.med-card.mag{border-left-color:#7a9d28}.med-card.oxygen{border-left-color:#0d9aa6}
+    .tag{display:inline-block;font-weight:900;color:#fff;background:var(--ink);padding:4px 8px;border-radius:9px;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px}.tag.red{background:var(--red)}.tag.blue{background:var(--blue)}.tag.green{background:var(--green)}.tag.purple{background:var(--purple)}.tag.orange{background:var(--orange)}
+    .pearl{background:#fff7d6;border:4px solid var(--gold);border-radius:20px;padding:16px;font-weight:750;margin:16px 0}.pearl .title{display:block;font-size:1rem;color:#8d5c00;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+    .chain{background:linear-gradient(90deg,#fff,#eef7ff);border:3px solid var(--blue);border-radius:22px;padding:16px;margin:16px 0}.chain ol{margin:0;padding-left:22px}.chain li{padding:5px 0;font-weight:650}
+    .check{background:#f8fbff;border:3px solid var(--ink);border-radius:20px;padding:14px;margin:12px 0}.warning{background:#fff0f0;border:3px solid var(--red);border-radius:18px;padding:14px;font-weight:750}.student-task{background:#effaf2;border:3px solid var(--green);border-radius:18px;padding:14px;margin:14px 0}.student-task h3{margin:0 0 8px;color:var(--green)}
+    details{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0}summary{cursor:pointer;font-weight:850;color:var(--blue)}
+    .scenario{background:#f2f7ff;border:4px solid var(--blue);border-radius:24px;padding:18px}.vitals{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.vital{background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px;font-weight:850}
+    .imagebox{background:#fffdf8;border:4px solid var(--ink);border-radius:24px;padding:14px;box-shadow:6px 6px 0 rgba(23,50,77,.10);margin:14px 0}.caption{font-size:.9rem;font-weight:850;color:#58687a;margin-top:6px;text-align:center}svg{width:100%;height:auto;display:block}
+    table{width:100%;border-collapse:separate;border-spacing:0;margin:12px 0;background:#fff;border:3px solid var(--ink);border-radius:18px;overflow:hidden}th,td{padding:10px 12px;border-bottom:2px solid rgba(23,50,77,.14);vertical-align:top}th{background:var(--ink);color:#fff;text-align:left}tr:last-child td{border-bottom:0}.hr{height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0 18px,transparent 18px 26px);border:0;margin:22px 0;opacity:.55}.footer{font-size:.9rem;color:#455;text-align:center;margin-top:30px}
+    @media (max-width:980px){.hero-grid,.cols,.mindset{grid-template-columns:1fr}.toc{grid-template-columns:1fr 1fr}.cols-3,.cols-4{grid-template-columns:1fr}.vitals{grid-template-columns:1fr 1fr}.hero{padding:24px 18px}}
+    @media print{body{background:#fff}.toc{display:none}.section,.hero{box-shadow:none;break-inside:avoid}details{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<main class="page">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="badge">🚑 EMSP 2306 • Week 2 PMS Guided Lecture</div>
+        <h1>Respiratory Rescue <span class="script">& Anaphylaxis Pharmacology</span></h1>
+        <p class="subtitle">A supportive, physiology-first guide to the medication logic behind respiratory distress, asthma/COPD, allergic reactions, and anaphylaxis.</p>
+        <div class="pillrow">
+          <span class="pill">Asthma/COPD Drug Therapy</span><span class="pill">Adrenergic Agonists</span><span class="pill">Muscarinic Antagonists</span><span class="pill">Antihistamines</span><span class="pill">Glucocorticoids</span>
+        </div>
+      </div>
+      <div class="quick-card">
+        <h3>How to use PMS</h3>
+        <p><strong>P — Patient Problem:</strong> What is failing inside the patient?</p>
+        <p><strong>M — Medication Mechanism:</strong> What receptor, airway process, or body system are we changing?</p>
+        <p><strong>S — Safety/Reassessment:</strong> What should improve, and what danger signs must we keep watching?</p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Page navigation">
+    <a href="#reading">Read First</a><a href="#anchor">Start Here</a><a href="#resp">Airway Failure</a><a href="#receptors">Receptors</a><a href="#meds">Medication PMS</a><a href="#allergy">Anaphylaxis</a>
+  </nav>
+
+  <section class="section" id="reading">
+    <h2><span>Reading Map</span>What to read and what to look for</h2>
+    <p>This page does not replace the textbook or local protocols. It gives you a map so the reading feels less like a wall of words and more like a clinical puzzle you can solve.</p>
+    <table>
+      <thead><tr><th>Source</th><th>Pages / Area</th><th>Read for this reason</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nancy Caroline Ch. 17 — Respiratory Emergencies</strong></td><td>pp. 1095–1128, with focus on pp. 1117–1128</td><td>Airway/respiratory anatomy, dyspnea assessment, SAMPLE, physical exam, monitoring devices, and interventions for respiratory complaints.</td></tr>
+        <tr><td><strong>Nancy Caroline Ch. 26 — Immunologic Emergencies</strong></td><td>pp. 1561–1576; anaphylaxis focus pp. 1560, 1568, 1572–1574; epinephrine auto-injector p. 1575</td><td>Allergic vs anaphylactic reactions, systemic response, mast cell mediator effects, shock, airway swelling, and anaphylaxis management.</td></tr>
+        <tr><td><strong>Nancy Caroline Ch. 15 — Emergency Medications</strong></td><td>Use as medication reference</td><td>Medication class, indications, contraindications, precautions, route, dose, side effects, and medication safety habits.</td></tr>
+        <tr><td><strong>Bledsoe Ch. 8 — Respiratory Emergency Medications</strong></td><td>Chapter focus</td><td>Oxygen devices, pulse oximetry, EtCO₂, beta agonists, epinephrine, racemic epinephrine, ipratropium, atropine, and magnesium sulfate.</td></tr>
+        <tr><td><strong>Bledsoe Ch. 9 — Allergic Reaction and Anaphylaxis Medications</strong></td><td>Chapter focus</td><td>Allergic vs anaphylactic reactions, histamine receptors, mediators, antihistamines, steroids, vasopressors, beta agonists, bronchodilators, and H2 receptor medications.</td></tr>
+        <tr><td><strong>NASEMSO Application</strong></td><td>Respiratory Distress/Asthma/COPD/Reactive Airway; Allergy/Anaphylaxis guidance</td><td>Use the national model mindset: recognize distress/failure/arrest, treat escalating airway and breathing threats, document baseline findings, and reassess after every intervention.</td></tr>
+      </tbody>
+    </table>
+    <div class="student-task"><h3>Student mission</h3><p>As you read, highlight anything that answers this question: <strong>“What is failing inside the patient, and how would I know if my medication helped?”</strong></p></div>
+  </section>
+
+  <section class="section" id="anchor">
+    <h2><span>1. Concept Anchor Statement</span>Before you pick the drug, find the failure.</h2>
+    <div class="anchor">Respiratory and allergic emergency medications only make sense when you connect them to the patient’s failing physiology.</div>
+    <div class="mindset">
+      <div class="box"><strong>EMTs recognize</strong> the patient is short of breath, wheezing, swollen, itchy, pale, anxious, or hypotensive.</div>
+      <div class="box"><strong>Paramedics recognize</strong> airway edema, bronchospasm, mucus plugging, air trapping, vasodilation, capillary leak, shock, and respiratory fatigue before the patient completely crashes.</div>
+    </div>
+    <p>Week 2 is where medication memorization begins turning into medication reasoning. It is not enough to know that albuterol is “for wheezing” or that epinephrine is “for anaphylaxis.” A paramedic asks: <strong>What part of the patient is failing right now?</strong> Is the airway swelling shut? Are the bronchi constricting? Is the patient trapping air? Is ventilation failing? Is the vascular system leaking and dilating? Is the patient still compensating, or are they about to fall off the cliff?</p>
+    <p>The same patient can have more than one failure at the same time. A severe anaphylaxis patient may have airway edema, bronchospasm, vasodilation, capillary leak, hypotension, and anxiety all at once. That is why epinephrine is such a high-value medication in anaphylaxis: it targets multiple failures, not just one symptom.</p>
+    <div class="imagebox">
+      <svg viewBox="0 0 1000 430" role="img" aria-label="PMS flow diagram">
+        <defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3"/><feDisplacementMap in="SourceGraphic" scale="2"/></filter><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#17324d"/></marker></defs>
+        <rect x="25" y="38" width="950" height="350" rx="34" fill="#fff9ee" stroke="#17324d" stroke-width="7" filter="url(#rough)"/>
+        <circle cx="170" cy="205" r="92" fill="#dff1ff" stroke="#17324d" stroke-width="6"/><circle cx="500" cy="205" r="92" fill="#fff7d6" stroke="#17324d" stroke-width="6"/><circle cx="830" cy="205" r="92" fill="#effaf2" stroke="#17324d" stroke-width="6"/>
+        <path d="M270 205 C335 155,365 155,400 205" fill="none" stroke="#17324d" stroke-width="8" marker-end="url(#arrow)"/><path d="M600 205 C665 155,695 155,730 205" fill="none" stroke="#17324d" stroke-width="8" marker-end="url(#arrow)"/>
+        <text x="170" y="166" text-anchor="middle" font-size="40" font-weight="900" fill="#2f6fae">P</text><text x="170" y="214" text-anchor="middle" font-size="24" font-weight="800" fill="#17324d">Patient</text><text x="170" y="244" text-anchor="middle" font-size="24" font-weight="800" fill="#17324d">Problem</text>
+        <text x="500" y="166" text-anchor="middle" font-size="40" font-weight="900" fill="#c94b4b">M</text><text x="500" y="214" text-anchor="middle" font-size="24" font-weight="800" fill="#17324d">Medication</text><text x="500" y="244" text-anchor="middle" font-size="24" font-weight="800" fill="#17324d">Mechanism</text>
+        <text x="830" y="166" text-anchor="middle" font-size="40" font-weight="900" fill="#3b8a57">S</text><text x="830" y="214" text-anchor="middle" font-size="24" font-weight="800" fill="#17324d">Safety +</text><text x="830" y="244" text-anchor="middle" font-size="24" font-weight="800" fill="#17324d">Reassessment</text>
+        <text x="500" y="342" text-anchor="middle" font-size="26" font-weight="900" fill="#17324d">The protocol tells you what you can give. PMS tells you why it matters.</text>
+      </svg>
+      <div class="caption">Diagram 1 — PMS turns a drug list into patient-centered reasoning.</div>
+    </div>
+    <div class="pearl"><span class="title">💎 Paramedic Pearl</span>A medication is not a magic button. It is a targeted attempt to change failing physiology.</div>
+  </section>
+
+  <section class="section" id="resp">
+    <h2><span>2. Concept Explanation</span>Respiratory distress is not one problem. It is a race between oxygenation, ventilation, and fatigue.</h2>
+    <p>Respiratory patients can look similar from the doorway, but the failure inside may be different. <strong>Oxygenation</strong> is about getting oxygen into the blood. <strong>Ventilation</strong> is about moving carbon dioxide out. <strong>Work of breathing</strong> is about how hard the body is working to do both. A patient can have a decent SpO₂ for a while and still be ventilating poorly, especially if they are trapping air or getting exhausted.</p>
+    <p>Asthma and COPD commonly involve lower-airway narrowing. In asthma, the classic problem is an inflammatory airway that overreacts: bronchospasm, swelling, and mucus reduce airflow. In COPD, chronic airway damage and loss of elastic recoil can make exhalation difficult, causing air trapping and increased dead space. Either way, the patient may be moving less effective air with more effort.</p>
+    <p>The EMS medication goal is not just “make the wheeze quieter.” The goal is to improve airflow, reduce bronchoconstriction, support oxygenation, support ventilation, and prevent fatigue from becoming respiratory failure. If the patient is too tired to breathe, a nebulizer alone is not enough; ventilation support becomes the treatment.</p>
+    <div class="imagebox">
+      <svg viewBox="0 0 1000 560" role="img" aria-label="Asthma triad airway diagram">
+        <defs><filter id="pencil"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2"/><feDisplacementMap in="SourceGraphic" scale="1.5"/></filter></defs>
+        <rect x="22" y="20" width="956" height="520" rx="28" fill="#fffdf8" stroke="#17324d" stroke-width="6"/>
+        <text x="500" y="62" text-anchor="middle" font-size="36" font-weight="900" fill="#17324d">The Asthma/COPD Airway Problem</text>
+        <g transform="translate(70,110)" filter="url(#pencil)">
+          <rect x="0" y="0" width="260" height="320" rx="36" fill="#fff0f0" stroke="#17324d" stroke-width="5"/>
+          <ellipse cx="130" cy="150" rx="96" ry="104" fill="#f8b7b7" stroke="#c94b4b" stroke-width="12"/>
+          <ellipse cx="130" cy="150" rx="35" ry="40" fill="#fff" stroke="#17324d" stroke-width="5"/>
+          <text x="130" y="290" text-anchor="middle" font-size="22" font-weight="900" fill="#c94b4b">Bronchospasm</text>
+        </g>
+        <g transform="translate(370,110)" filter="url(#pencil)">
+          <rect x="0" y="0" width="260" height="320" rx="36" fill="#fff7d6" stroke="#17324d" stroke-width="5"/>
+          <ellipse cx="130" cy="150" rx="100" ry="106" fill="#ffe4a6" stroke="#f2b84b" stroke-width="12"/>
+          <ellipse cx="130" cy="150" rx="47" ry="50" fill="#fff" stroke="#17324d" stroke-width="5"/>
+          <path d="M95 150 C115 126,142 173,170 135" fill="none" stroke="#2f6fae" stroke-width="10" stroke-linecap="round"/>
+          <text x="130" y="290" text-anchor="middle" font-size="22" font-weight="900" fill="#8d5c00">Mucus + Air Trapping</text>
+        </g>
+        <g transform="translate(670,110)" filter="url(#pencil)">
+          <rect x="0" y="0" width="260" height="320" rx="36" fill="#effaf2" stroke="#17324d" stroke-width="5"/>
+          <ellipse cx="130" cy="150" rx="100" ry="106" fill="#aae6bd" stroke="#3b8a57" stroke-width="8"/>
+          <ellipse cx="130" cy="150" rx="75" ry="80" fill="#fff" stroke="#17324d" stroke-width="5"/>
+          <text x="130" y="290" text-anchor="middle" font-size="22" font-weight="900" fill="#3b8a57">Improved Airflow</text>
+        </g>
+        <text x="500" y="482" text-anchor="middle" font-size="24" font-weight="900" fill="#17324d">Medication works best when it matches the failure:</text>
+        <text x="500" y="514" text-anchor="middle" font-size="22" font-weight="850" fill="#17324d">constriction • inflammation • mucus • ventilation • shock</text>
+      </svg>
+      <div class="caption">Diagram 2 — Tight airways are a mechanical and inflammatory problem.</div>
+    </div>
+    <div class="cols">
+      <div class="card"><h3>Assessment clues that matter</h3><ul><li>Can the patient speak in full sentences?</li><li>Is wheezing loud, faint, or suddenly absent?</li><li>Are accessory muscles working hard?</li><li>Is EtCO₂ rising, falling, or showing a shark-fin pattern?</li><li>Is the patient improving after medication, or just getting quieter?</li></ul></div>
+      <div class="card"><h3>Do not let SpO₂ fool you</h3><p>SpO₂ tells you oxygen saturation, not the full story of ventilation or fatigue. A patient can have acceptable SpO₂ while carbon dioxide is rising, especially if oxygen is being delivered but ventilation is failing. Look at the patient, the waveform, the respiratory effort, and the trend.</p></div>
+    </div>
+    <div class="imagebox">
+      <svg viewBox="0 0 1000 390" role="img" aria-label="EtCO2 waveforms normal bronchospasm fatigue">
+        <rect x="20" y="25" width="960" height="340" rx="28" fill="#fffdf8" stroke="#17324d" stroke-width="6"/>
+        <text x="500" y="62" text-anchor="middle" font-size="31" font-weight="900" fill="#17324d">EtCO₂: The Waveform Tells a Story</text>
+        <g transform="translate(70,105)"><rect x="0" y="0" width="250" height="190" rx="20" fill="#effaf2" stroke="#17324d" stroke-width="4"/><path d="M20 150 L50 150 L50 60 L160 60 L160 150 L220 150" fill="none" stroke="#3b8a57" stroke-width="8" stroke-linejoin="round"/><text x="125" y="222" text-anchor="middle" font-size="22" font-weight="900" fill="#3b8a57">More Normal</text></g>
+        <g transform="translate(375,105)"><rect x="0" y="0" width="250" height="190" rx="20" fill="#fff7d6" stroke="#17324d" stroke-width="4"/><path d="M20 150 L55 150 C62 130,70 100,95 84 C125 65,162 62,200 60 L220 150" fill="none" stroke="#f2b84b" stroke-width="8" stroke-linejoin="round"/><text x="125" y="222" text-anchor="middle" font-size="22" font-weight="900" fill="#8d5c00">Bronchospasm</text></g>
+        <g transform="translate(680,105)"><rect x="0" y="0" width="250" height="190" rx="20" fill="#fff0f0" stroke="#17324d" stroke-width="4"/><path d="M20 150 L50 150 C70 115,100 95,140 90 C170 87,190 82,215 72" fill="none" stroke="#c94b4b" stroke-width="8" stroke-linejoin="round"/><text x="125" y="222" text-anchor="middle" font-size="22" font-weight="900" fill="#c94b4b">Worsening / Fatigue?</text></g>
+      </svg>
+      <div class="caption">Diagram 3 — Reassess the waveform, not just the number.</div>
+    </div>
+  </section>
+
+  <section class="section" id="receptors">
+    <h2><span>3. Receptor Map</span>Receptors are the buttons medications press — and each button has a price.</h2>
+    <p>Most Week 2 medications are easier once you understand the receptor target. A beta-2 agonist is not “a breathing medicine” by magic; it relaxes bronchial smooth muscle. Epinephrine is not “strong Benadryl”; it stimulates alpha and beta receptors to reverse life-threatening airway and perfusion problems. Anticholinergics do not directly stimulate beta receptors; they reduce parasympathetic bronchoconstriction. Antihistamines do not reopen shocky blood vessels or fix severe airway edema; they block histamine effects and are supportive.</p>
+    <div class="imagebox">
+      <svg viewBox="0 0 1000 610" role="img" aria-label="Medication receptor map">
+        <rect x="20" y="20" width="960" height="570" rx="28" fill="#fffdf8" stroke="#17324d" stroke-width="6"/>
+        <text x="500" y="65" text-anchor="middle" font-size="36" font-weight="900" fill="#17324d">Week 2 Receptor Cheat Map</text>
+        <g transform="translate(70,105)"><rect width="250" height="180" rx="24" fill="#fff0f0" stroke="#c94b4b" stroke-width="5"/><text x="125" y="48" text-anchor="middle" font-size="28" font-weight="900" fill="#c94b4b">Alpha-1</text><text x="125" y="88" text-anchor="middle" font-size="21" font-weight="800">Squeeze vessels</text><text x="125" y="122" text-anchor="middle" font-size="18">↑ SVR / ↑ BP</text><text x="125" y="152" text-anchor="middle" font-size="18">↓ airway edema</text></g>
+        <g transform="translate(375,105)"><rect width="250" height="180" rx="24" fill="#fff7d6" stroke="#f2b84b" stroke-width="5"/><text x="125" y="48" text-anchor="middle" font-size="28" font-weight="900" fill="#8d5c00">Beta-1</text><text x="125" y="88" text-anchor="middle" font-size="21" font-weight="800">Push the pump</text><text x="125" y="122" text-anchor="middle" font-size="18">↑ HR / ↑ squeeze</text><text x="125" y="152" text-anchor="middle" font-size="18">Watch dysrhythmias</text></g>
+        <g transform="translate(680,105)"><rect width="250" height="180" rx="24" fill="#effaf2" stroke="#3b8a57" stroke-width="5"/><text x="125" y="48" text-anchor="middle" font-size="28" font-weight="900" fill="#3b8a57">Beta-2</text><text x="125" y="88" text-anchor="middle" font-size="21" font-weight="800">Open bronchi</text><text x="125" y="122" text-anchor="middle" font-size="18">Bronchodilation</text><text x="125" y="152" text-anchor="middle" font-size="18">Tremor / tachycardia</text></g>
+        <g transform="translate(125,335)"><rect width="310" height="170" rx="24" fill="#f2edff" stroke="#7353a6" stroke-width="5"/><text x="155" y="46" text-anchor="middle" font-size="27" font-weight="900" fill="#7353a6">Muscarinic</text><text x="155" y="86" text-anchor="middle" font-size="20" font-weight="800">Parasympathetic airway tone</text><text x="155" y="120" text-anchor="middle" font-size="18">Block it → less bronchoconstriction</text><text x="155" y="148" text-anchor="middle" font-size="18">Can dry secretions</text></g>
+        <g transform="translate(560,335)">
+          <rect width="310" height="170" rx="24" fill="#fff1e8" stroke="#e07a32" stroke-width="5"/>
+          <text x="155" y="42" text-anchor="middle" font-size="26" font-weight="900" fill="#e07a32">Histamine H1/H2</text>
+          <text x="155" y="78" text-anchor="middle" font-size="18" font-weight="800">Itching + hives</text>
+          <text x="155" y="104" text-anchor="middle" font-size="18" font-weight="800">GI acid effects</text>
+          <text x="155" y="130" text-anchor="middle" font-size="17">Support symptoms</text>
+          <text x="155" y="154" text-anchor="middle" font-size="16" font-weight="800">Not first-line for shock</text>
+        </g>
+        <text x="500" y="560" text-anchor="middle" font-size="23" font-weight="900" fill="#17324d">Every receptor effect has a patient benefit and a patient risk.</text>
+      </svg>
+      <div class="caption">Diagram 4 — Receptors help you predict both improvement and side effects.</div>
+    </div>
+    <div class="pearl"><span class="title">💎 Paramedic Pearl</span>If you understand the receptor, you can predict the outcome before the monitor proves it.</div>
+  </section>
+
+  <section class="section" id="meds">
+    <h2><span>4. Medication PMS Cards</span>What each medication is trying to fix</h2>
+    <p>Use these cards as your “why” before you study the dose. Doses matter, but dose memorization without mechanism is like knowing the address without knowing why you were dispatched.</p>
+    <div class="cols-3">
+      <div class="card med-card oxygen"><span class="tag blue">Oxygen</span><h3>Supports oxygenation</h3><p><strong>P:</strong> Hypoxemia or high-risk respiratory distress.</p><p><strong>M:</strong> Increases oxygen available for diffusion into blood.</p><p><strong>S:</strong> Reassess SpO₂, mental status, work of breathing, and signs of worsening ventilation. Oxygen does not fix bronchospasm by itself.</p></div>
+      <div class="card med-card albuterol"><span class="tag blue">Albuterol / Levalbuterol</span><h3>Beta-2 bronchodilation</h3><p><strong>P:</strong> Wheezing, bronchospasm, asthma/COPD exacerbation.</p><p><strong>M:</strong> Stimulates beta-2 receptors, relaxing bronchial smooth muscle and improving airflow.</p><p><strong>S:</strong> Watch tachycardia, tremor, palpitations, anxiety, and poor response. Reassess lung sounds, ability to speak, EtCO₂ waveform, RR, and fatigue.</p></div>
+      <div class="card med-card ipratropium"><span class="tag purple">Ipratropium</span><h3>Blocks parasympathetic constriction</h3><p><strong>P:</strong> Bronchospasm with cholinergic contribution, especially COPD/asthma exacerbations.</p><p><strong>M:</strong> Blocks muscarinic receptors in the airway, reducing bronchoconstriction.</p><p><strong>S:</strong> Useful with beta-2 agonists. Watch drying effects and understand it is not the same mechanism as albuterol.</p></div>
+      <div class="card med-card epi"><span class="tag red">Epinephrine</span><h3>The multi-tool for anaphylaxis</h3><p><strong>P:</strong> Anaphylaxis with airway swelling, bronchospasm, hypotension, or shock risk.</p><p><strong>M:</strong> Alpha-1 vasoconstriction supports BP and reduces edema; beta-1 supports cardiac output; beta-2 bronchodilates.</p><p><strong>S:</strong> Time matters. Reassess BP, airway swelling, wheezing, skin signs, mental status, and recurrence. Watch tachycardia, hypertension, chest pain, and dysrhythmias.</p></div>
+      <div class="card med-card antihist"><span class="tag orange">Diphenhydramine</span><h3>H1 symptom support</h3><p><strong>P:</strong> Hives, itching, allergic symptoms; adjunct in anaphylaxis after the life threat is addressed.</p><p><strong>M:</strong> Blocks H1 histamine receptors, reducing some allergic effects.</p><p><strong>S:</strong> Sedation and anticholinergic effects can confuse reassessment. It does not replace epinephrine for anaphylaxis.</p></div>
+      <div class="card med-card antihist"><span class="tag orange">Famotidine / H2 Blocker</span><h3>Supportive histamine blockade</h3><p><strong>P:</strong> Allergic reaction adjunct when included in local protocol.</p><p><strong>M:</strong> Blocks H2 receptors; may support broader histamine blockade.</p><p><strong>S:</strong> Helpful as an adjunct, but it does not fix airway edema, bronchospasm, or shock by itself.</p></div>
+      <div class="card med-card steroid"><span class="tag green">Corticosteroids</span><h3>Inflammation control over time</h3><p><strong>P:</strong> Airway inflammation, asthma/COPD flare, allergic inflammation, risk of prolonged symptoms.</p><p><strong>M:</strong> Reduces inflammatory signaling and mediator production, but onset is not immediate rescue.</p><p><strong>S:</strong> Do not expect instant bronchodilation. Watch BGL, immune considerations, and remember they support later control.</p></div>
+      <div class="card med-card mag"><span class="tag green">Magnesium Sulfate</span><h3>Smooth muscle relaxation support</h3><p><strong>P:</strong> Severe/refractory bronchospasm per protocol.</p><p><strong>M:</strong> Can help relax bronchial smooth muscle and reduce severe airway resistance.</p><p><strong>S:</strong> Monitor BP, respiratory status, ECG, and overall response. This is not your first move for every wheeze.</p></div>
+      <div class="card med-card epi"><span class="tag red">Racemic / Nebulized Epinephrine</span><h3>Upper airway swelling support</h3><p><strong>P:</strong> Stridor or upper-airway edema/croup-like presentation per protocol.</p><p><strong>M:</strong> Local alpha effect can reduce mucosal swelling; beta effect may support airflow.</p><p><strong>S:</strong> Reassess stridor, work of breathing, oxygenation, and rebound symptoms. Prepare for escalation if the airway worsens.</p></div>
+    </div>
+    <div class="warning">⚠ High Risk Concept: A patient can sound “quieter” because treatment worked — or because they are too fatigued to move air. Never reassess with your ears only. Reassess the whole patient.</div>
+  </section>
+
+  <section class="section" id="allergy">
+    <h2><span>5. Allergic Reaction vs Anaphylaxis</span>Anaphylaxis is a system-wide failure, not a bad rash.</h2>
+    <p>An allergic reaction can be local and uncomfortable. Anaphylaxis is different because it threatens airway, breathing, circulation, or more than one body system. Mast cells and basophils release chemical mediators that produce vasodilation, capillary leak, bronchospasm, mucus production, and swelling. The patient may be itchy and flushed, but the dangerous part is what you cannot ignore: airway narrowing, worsening ventilation, and shock.</p>
+    <p>When anaphylaxis appears, epinephrine is the medication that most directly matches the life-threatening physiology. Antihistamines and steroids can be useful adjuncts, but they are not the rescue medication for airway edema, bronchospasm, and distributive shock. In simple words: <strong>Benadryl may calm the histamine party, but epinephrine stops the building from collapsing.</strong></p>
+    <div class="imagebox">
+      <svg viewBox="0 0 1000 560" role="img" aria-label="Anaphylaxis cascade diagram">
+        <defs><marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#17324d"/></marker></defs>
+        <rect x="20" y="25" width="960" height="510" rx="28" fill="#fffdf8" stroke="#17324d" stroke-width="6"/>
+        <text x="500" y="68" text-anchor="middle" font-size="35" font-weight="900" fill="#17324d">Anaphylaxis: The Failure Cascade</text>
+        <g font-weight="900" font-size="20" text-anchor="middle">
+          <rect x="60" y="135" width="160" height="80" rx="18" fill="#dff1ff" stroke="#17324d" stroke-width="4"/><text x="140" y="168">Allergen</text><text x="140" y="194">enters</text>
+          <path d="M220 175 L300 175" stroke="#17324d" stroke-width="6" marker-end="url(#arrow2)"/>
+          <rect x="305" y="135" width="180" height="80" rx="18" fill="#fff7d6" stroke="#17324d" stroke-width="4"/><text x="395" y="168">Mast cells</text><text x="395" y="194">release mediators</text>
+          <path d="M485 175 L565 175" stroke="#17324d" stroke-width="6" marker-end="url(#arrow2)"/>
+          <rect x="570" y="135" width="180" height="80" rx="18" fill="#fff1e8" stroke="#17324d" stroke-width="4"/><text x="660" y="168">Histamine +</text><text x="660" y="194">mediators</text>
+          <path d="M750 175 L830 175" stroke="#17324d" stroke-width="6" marker-end="url(#arrow2)"/>
+          <rect x="835" y="135" width="120" height="80" rx="18" fill="#fff0f0" stroke="#17324d" stroke-width="4"/><text x="895" y="168">System</text><text x="895" y="194">failure</text>
+        </g>
+        <g font-weight="850" font-size="19" text-anchor="middle">
+          <rect x="75" y="310" width="190" height="95" rx="18" fill="#fff0f0" stroke="#c94b4b" stroke-width="4"/><text x="170" y="346">Airway edema</text><text x="170" y="374">Stridor / swelling</text>
+          <rect x="305" y="310" width="190" height="95" rx="18" fill="#effaf2" stroke="#3b8a57" stroke-width="4"/><text x="400" y="346">Bronchospasm</text><text x="400" y="374">Wheeze / poor air</text>
+          <rect x="535" y="310" width="190" height="95" rx="18" fill="#fff7d6" stroke="#f2b84b" stroke-width="4"/><text x="630" y="346">Capillary leak</text><text x="630" y="374">Swelling / low volume</text>
+          <rect x="765" y="310" width="160" height="95" rx="18" fill="#f2edff" stroke="#7353a6" stroke-width="4"/><text x="845" y="346">Vasodilation</text><text x="845" y="374">Hypotension</text>
+        </g>
+        <text x="500" y="485" text-anchor="middle" font-size="25" font-weight="900" fill="#c94b4b">Epinephrine matches the life threat: airway + breathing + circulation.</text>
+      </svg>
+      <div class="caption">Diagram 5 — Anaphylaxis is a cascade, not a single symptom.</div>
+    </div>
+    <div class="chain"><strong>Mechanism → Physiology → Outcome Chain</strong><ol><li>Allergen exposure triggers immune mediator release.</li><li>Mediators cause vasodilation, capillary leak, bronchospasm, mucus, and airway swelling.</li><li>The patient develops respiratory compromise, hypotension, skin findings, GI symptoms, or altered mental status.</li><li>Epinephrine stimulates alpha and beta receptors to improve vascular tone, airway edema, cardiac output, and bronchodilation.</li><li>Adjuncts such as antihistamines and steroids may help symptoms or delayed inflammation, but reassessment and transport remain essential.</li></ol></div>
+  </section>
+
+  <section class="section" id="nasemso">
+    <h2><span>6. Field Application</span>NASEMSO-style thinking: treat, trend, document, reassess.</h2>
+    <p>National model guidance reinforces that respiratory care is not “give a nebulizer and move on.” The EMS clinician should identify respiratory distress, respiratory failure, and respiratory arrest early, then escalate therapy as needed. In practical terms, that means you keep asking: <strong>Is this patient moving enough air to stay alive?</strong></p>
+    <div class="cols">
+      <div class="card"><h3>Respiratory Distress/Asthma/COPD/Reactive Airway</h3><ul><li>Document baseline respiratory exam before intervention.</li><li>Trend RR, work of breathing, lung sounds, SpO₂, EtCO₂, mental status, and ability to speak.</li><li>Use medications to reduce bronchospasm when indicated.</li><li>Escalate to assisted ventilation when medication is not enough.</li></ul></div>
+      <div class="card"><h3>Allergy/Anaphylaxis</h3><ul><li>Look for airway swelling, wheezing, respiratory distress, hypotension, and shock.</li><li>Treat life threats first; epinephrine timing matters.</li><li>Use oxygen and ventilation support based on the patient’s respiratory status.</li><li>Reassess after each intervention and monitor for recurrence.</li></ul></div>
+    </div>
+    <div class="student-task"><h3>Documentation drill</h3><p>After each medication, chart what changed: <strong>breathing effort, lung sounds, SpO₂, EtCO₂ waveform, BP, HR, skin, mental status, and patient speech.</strong> If nothing changed, that is also important data.</p></div>
+  </section>
+
+  <section class="section" id="failure">
+    <h2><span>7. Failure Cascade Explanation</span>What happens if we miss the physiology?</h2>
+    <p>If bronchospasm, swelling, and mucus continue untreated, the patient works harder to move less air. As air trapping worsens, ventilation becomes inefficient, carbon dioxide may rise, and respiratory muscles begin to fatigue. Eventually, the patient may stop wheezing not because they improved, but because airflow is too poor to create wheezes.</p>
+    <p>If anaphylaxis progresses untreated, vascular tone falls, capillaries leak, airway swelling worsens, and bronchospasm increases resistance to airflow. The patient can move from anxiety and hives to hypotension, hypoxia, altered mental status, and arrest. The danger is speed: anaphylaxis can deteriorate faster than the class notes can keep up.</p>
+    <div class="warning">⚠ High Risk Concept: A delayed epinephrine decision in anaphylaxis is not a small delay. It gives airway edema, bronchospasm, and shock more time to win.</div>
+  </section>
+
+  <section class="section" id="check">
+    <h2><span>8. Clinical Mindset Check Scenario</span>🚑 “The Wheeze That Got Quiet”</h2>
+    <div class="scenario">
+      <p><strong>Dispatch:</strong> 22-year-old female at a park after a food exposure, now short of breath and “feeling weird.” Friends report she has a peanut allergy.</p>
+      <div class="vitals"><div class="vital">BP 88/54</div><div class="vital">HR 132</div><div class="vital">RR 32, labored</div><div class="vital">Temp 37.1°C / 98.8°F</div><div class="vital">SpO₂ 91%</div><div class="vital">EtCO₂ 48, shark-fin waveform</div><div class="vital">BGL 104 mg/dL</div><div class="vital">Skin flushed, hives</div></div>
+      <p><strong>Exam:</strong> Swelling to lips, hoarse voice, diffuse wheezing that becomes quieter while the patient becomes more tired. She is anxious, speaking 2–3 word sentences, and now has delayed cap refill.</p>
+      <h3>Think like a paramedic.</h3>
+      <ol><li>What is failing inside this patient?</li><li>Which medication directly matches the airway, breathing, and circulation threat?</li><li>Which medications are adjuncts, and why are they not the priority rescue medication?</li><li>What reassessment findings would tell you the patient is improving?</li><li>What findings would tell you to escalate ventilation or airway management?</li></ol>
+    </div>
+    <details><summary>Instructor reasoning notes</summary><p>This patient has anaphylaxis with airway edema, bronchospasm, hypotension, and likely worsening ventilatory failure. Epinephrine is the priority medication because alpha-1, beta-1, and beta-2 effects match the life threats. Albuterol may help bronchospasm, antihistamines may support histamine symptoms, and steroids may support delayed inflammatory control, but none replace early epinephrine and airway/ventilation support.</p></details>
+  </section>
+
+  <section class="section" id="synthesize">
+    <h2><span>9. Pause & Synthesize</span>Questions to answer before class</h2>
+    <div class="cols-3">
+      <div class="check"><strong>Question 1</strong><br>Why can a patient with a good SpO₂ still be in serious respiratory trouble?</div>
+      <div class="check"><strong>Question 2</strong><br>Why is epinephrine first-line in anaphylaxis while diphenhydramine is supportive?</div>
+      <div class="check"><strong>Question 3</strong><br>How can EtCO₂ waveform shape help you reassess bronchospasm?</div>
+      <div class="check"><strong>Question 4</strong><br>What does albuterol change that ipratropium does not?</div>
+      <div class="check"><strong>Question 5</strong><br>Why are corticosteroids important even though they are not immediate rescue medications?</div>
+      <div class="check"><strong>Question 6</strong><br>What findings would make you stop thinking “more medication” and start thinking “ventilation support”?</div>
+    </div>
+  </section>
+
+  <section class="section" id="forward">
+    <h2><span>10. Forward Link</span>From lungs to circulation</h2>
+    <p>Respiratory and anaphylaxis medications prepare you for the next major pharmacology jump: cardiovascular medications. The same PMS logic applies. First identify the failure, then connect the medication mechanism to the patient’s physiology, then reassess for benefit and harm.</p>
+    <div class="pearl"><span class="title">💎 Final Paramedic Pearl</span>Do not chase the drug list. Chase the failing physiology.</div>
+  </section>
+
+  <div class="footer">Created for EMSP 2306 Week 2. Follow local protocol, medical direction, and current course instructions for actual medication dosing and administration.</div>
+</main>
+</body>
+</html>
