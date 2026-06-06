@@ -79,6 +79,12 @@
   - gauge needle movement
   - state-specific help prompt
   - red-state pivot help action
+- Added the Ask Kai dashboard entry point:
+  - top-header Ask Kai button
+  - right-side chat drawer
+  - endpoint and Steven access-token fields saved only in the local browser
+  - current activity, agenda, handouts, and resources sent as source context
+  - no API keys or credentials stored in the public GitHub Pages files
 - Fixed Upcoming Agenda behavior:
   - View Full Agenda now opens a dashboard agenda modal instead of Print & Prep
   - schedule starts at 9:30 AM and runs to noon

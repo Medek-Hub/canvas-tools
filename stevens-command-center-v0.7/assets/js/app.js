@@ -16,6 +16,7 @@
     volumeOff: '<svg class="icon" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5Z"></path><path d="M22 9 16 15"></path><path d="m16 9 6 6"></path></svg>',
     expand: '<svg class="icon" viewBox="0 0 24 24"><path d="M8 3H3v5"></path><path d="M16 3h5v5"></path><path d="M21 16v5h-5"></path><path d="M3 16v5h5"></path></svg>',
     external: '<svg class="icon" viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>',
+    close: '<svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>',
     lightbulb: '<svg class="icon" viewBox="0 0 24 24"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7c.7.5 1 1.2 1 2.1V17h6v-.2c0-.9.4-1.6 1-2.1A7 7 0 0 0 12 2Z"></path></svg>',
     play: '<svg class="icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"></path></svg>',
     pause: '<svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14"></path><path d="M16 5v14"></path></svg>',
@@ -315,6 +316,14 @@
     ["Research Search", "PubMed search: prehospital anaphylaxis epinephrine", "https://pubmed.ncbi.nlm.nih.gov/?term=prehospital+anaphylaxis+epinephrine"]
   ];
 
+  function getKaiEndpoint() {
+    return window.KAI_CHAT_ENDPOINT || localStorage.getItem("kaiChatEndpoint") || "";
+  }
+
+  function getKaiAccessToken() {
+    return localStorage.getItem("kaiAccessToken") || "";
+  }
+
   const gameLinks = [
     {
       title: "Airway Math Arena",
@@ -444,6 +453,15 @@
     sound: true,
     roomEnergy: "green",
     agendaOpen: false,
+    kaiOpen: false,
+    kaiSending: false,
+    kaiInput: "",
+    kaiMessages: [
+      {
+        role: "kai",
+        text: "Ask me for a quick scenario, worksheet prompt, pivot, debrief language, or a student-facing explanation. I will use the current Week 2 dashboard context when the Kai endpoint is connected."
+      }
+    ],
     usedPrompts: new Set(),
     debriefText: "",
     game: {
@@ -592,6 +610,7 @@
       content.insertAdjacentHTML("beforeend", fullAgendaHTML());
     }
     hydrateIcons(content);
+    renderKaiOverlay();
     syncTimerDisplay();
   }
 
@@ -826,6 +845,119 @@
         </section>
       </div>
     `;
+  }
+
+  function buildKaiContext() {
+    const activity = currentActivity();
+    return {
+      dashboard: "Steven's Instructor Command Center",
+      week: "Week 2: Respiratory + Anaphylaxis",
+      group: state.group,
+      groupLabel: groupLabel(),
+      day: state.day,
+      classTime: `${formatClockTime(classStartMinutes)} - ${formatClockTime(classEndMinutes)}`,
+      currentActivity: {
+        title: activity.title,
+        type: activity.type,
+        minutes: activity.minutes,
+        summary: activity.sub,
+        task: activity.task,
+        kaiCoachTip: activity.kai,
+        stevenSaysNext: activity.say,
+        stuckPrompts: activity.stuck,
+        materials: activity.materials,
+        learningTargets: activity.targets,
+        handout: handoutNames[activity.handout] || activity.handout
+      },
+      agenda: scheduleEntries().map(({ item, startLabel, endLabel, label }, index) => ({
+        time: label,
+        start: startLabel,
+        end: endLabel,
+        title: item.title,
+        summary: item.sub,
+        live: index === state.activityIndex
+      })),
+      handouts: handoutOrder.map((key) => ({ key, title: handoutNames[key] })),
+      resources: resources.map(([type, title, url]) => ({ type, title, url }))
+    };
+  }
+
+  function kaiContextLines(context) {
+    return [
+      `Group ${context.group} (${context.groupLabel})`,
+      `Day ${context.day}`,
+      context.currentActivity.title,
+      context.currentActivity.handout,
+      ...context.currentActivity.materials.slice(0, 3)
+    ];
+  }
+
+  function renderKaiOverlay() {
+    const host = $("kaiOverlay");
+    if (!host) {
+      return;
+    }
+    if (!state.kaiOpen) {
+      host.innerHTML = "";
+      return;
+    }
+    const endpoint = getKaiEndpoint();
+    const token = getKaiAccessToken();
+    const context = buildKaiContext();
+    host.innerHTML = `
+      <div class="kai-overlay" role="presentation">
+        <div class="kai-backdrop" data-action="close-kai"></div>
+        <aside class="kai-drawer" role="dialog" aria-modal="true" aria-labelledby="kaiTitle">
+          <header class="kai-head">
+            <div>
+              <p class="panel-kicker">Ask Kai</p>
+              <h2 id="kaiTitle">Kai Course Assistant</h2>
+              <p>${endpoint && token ? "Endpoint and access token saved." : "Endpoint and Steven access token required."}</p>
+            </div>
+            <button class="btn btn-ghost" type="button" data-action="close-kai" aria-label="Close Ask Kai"><span data-icon="close"></span>Close</button>
+          </header>
+
+          <section class="kai-source-card">
+            <h3>Source Context</h3>
+            <div class="kai-context-chips">
+              ${kaiContextLines(context).map((item) => `<span>${escapeHTML(item)}</span>`).join("")}
+            </div>
+          </section>
+
+          <section class="kai-connection-card">
+            <label for="kaiEndpointInput">Kai endpoint</label>
+            <div class="kai-endpoint-row">
+              <input id="kaiEndpointInput" data-role="kai-endpoint" value="${escapeHTML(endpoint)}" placeholder="https://your-domain.com/api/kai-chat">
+            </div>
+            <label for="kaiTokenInput">Steven access token</label>
+            <div class="kai-endpoint-row">
+              <input id="kaiTokenInput" data-role="kai-token" type="password" value="${escapeHTML(token)}" placeholder="Paste Steven's private access token" autocomplete="off">
+              <button class="btn btn-ghost" type="button" data-action="save-kai-endpoint">Save Login</button>
+            </div>
+            <p>Saved only in this browser. The endpoint must validate this token before calling Kai.</p>
+          </section>
+
+          <section class="kai-chat-log" aria-live="polite">
+            ${state.kaiMessages.map((message) => `
+              <article class="kai-message ${message.role === "steven" ? "from-steven" : "from-kai"}">
+                <strong>${message.role === "steven" ? "Steven" : "Kai"}</strong>
+                <p>${escapeHTML(message.text)}</p>
+              </article>
+            `).join("")}
+            ${state.kaiSending ? '<article class="kai-message from-kai"><strong>Kai</strong><p>Thinking with the current source context...</p></article>' : ""}
+          </section>
+
+          <form class="kai-composer" data-role="kai-form">
+            <textarea data-role="kai-input" rows="3" placeholder="Ask for a scenario, worksheet prompt, explanation, pivot, debrief note, or quiz question.">${escapeHTML(state.kaiInput)}</textarea>
+            <div class="kai-composer-actions">
+              <button class="btn btn-ghost" type="button" data-action="copy-kai-context"><span data-icon="clipboard"></span>Copy Context</button>
+              <button class="btn btn-primary" type="submit" ${state.kaiSending ? "disabled" : ""}><span data-icon="sparkle"></span>Send to Kai</button>
+            </div>
+          </form>
+        </aside>
+      </div>
+    `;
+    hydrateIcons(host);
   }
 
   function dashboardPreviewHTML(activity) {
@@ -1692,6 +1824,88 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
     URL.revokeObjectURL(url);
   }
 
+  function saveKaiEndpoint() {
+    const endpoint = document.querySelector("[data-role='kai-endpoint']")?.value.trim() || "";
+    const token = document.querySelector("[data-role='kai-token']")?.value.trim() || "";
+    if (endpoint) {
+      localStorage.setItem("kaiChatEndpoint", endpoint);
+    } else {
+      localStorage.removeItem("kaiChatEndpoint");
+    }
+    if (token) {
+      localStorage.setItem("kaiAccessToken", token);
+    } else {
+      localStorage.removeItem("kaiAccessToken");
+    }
+    state.kaiMessages.push({
+      role: "kai",
+      text: endpoint && token ? "Kai endpoint and Steven access token saved for this browser." : "Kai login updated. Add both an endpoint and access token before live generation."
+    });
+    renderKaiOverlay();
+  }
+
+  function copyKaiContext() {
+    const payload = JSON.stringify(buildKaiContext(), null, 2);
+    navigator.clipboard?.writeText(payload);
+    state.kaiMessages.push({
+      role: "kai",
+      text: "Current source context copied. You can paste it into Kai while the live endpoint is being connected."
+    });
+    renderKaiOverlay();
+  }
+
+  async function sendKaiMessage() {
+    const input = document.querySelector("[data-role='kai-input']");
+    const text = input?.value.trim() || "";
+    if (!text || state.kaiSending) {
+      return;
+    }
+    state.kaiInput = "";
+    state.kaiMessages.push({ role: "steven", text });
+    const endpoint = getKaiEndpoint();
+    const token = getKaiAccessToken();
+    if (!endpoint || !token) {
+      state.kaiMessages.push({
+        role: "kai",
+        text: "I need the Kai endpoint and Steven access token before I can generate live content here. Paste both above, or copy the source context and send it to Kai manually for now."
+      });
+      renderKaiOverlay();
+      return;
+    }
+    state.kaiSending = true;
+    renderKaiOverlay();
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          message: text,
+          history: state.kaiMessages.slice(-10),
+          context: buildKaiContext()
+        })
+      });
+      if (!response.ok) {
+        throw new Error(`Kai endpoint returned ${response.status}`);
+      }
+      const data = await response.json();
+      state.kaiMessages.push({
+        role: "kai",
+        text: data.reply || data.message || data.text || "Kai responded, but the endpoint did not return a reply field."
+      });
+    } catch (error) {
+      state.kaiMessages.push({
+        role: "kai",
+        text: `Connection issue: ${error.message}. Check the endpoint URL, CORS, and server logs.`
+      });
+    } finally {
+      state.kaiSending = false;
+      renderKaiOverlay();
+    }
+  }
+
   function buildPrintArea() {
     $("printArea").innerHTML = handoutOrder
       .map((key) => `<div class="print-page">${handoutHTML(key)}</div>`)
@@ -1710,6 +1924,16 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
       state.tab = target.dataset.tab;
       render();
       $("content").focus({ preventScroll: true });
+    } else if (action === "open-kai") {
+      state.kaiOpen = true;
+      renderKaiOverlay();
+    } else if (action === "close-kai") {
+      state.kaiOpen = false;
+      renderKaiOverlay();
+    } else if (action === "save-kai-endpoint") {
+      saveKaiEndpoint();
+    } else if (action === "copy-kai-context") {
+      copyKaiContext();
     } else if (action === "fullscreen") {
       document.documentElement.requestFullscreen?.();
     } else if (action === "toggle-sound") {
@@ -1809,11 +2033,21 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
     }
   });
 
+  document.addEventListener("submit", (event) => {
+    if (event.target.matches("[data-role='kai-form']")) {
+      event.preventDefault();
+      sendKaiMessage();
+    }
+  });
+
   document.addEventListener("input", (event) => {
     const target = event.target;
     if (target.matches("[data-tuner]")) {
       handleLayoutTunerInput(target);
       return;
+    }
+    if (target.matches("[data-role='kai-input']")) {
+      state.kaiInput = target.value;
     }
     if (target.matches("[data-action='confidence']")) {
       state.game.confidence = Number(target.value);

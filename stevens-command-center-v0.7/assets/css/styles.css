@@ -428,6 +428,13 @@ svg {
   display: none;
 }
 
+.ask-kai-button {
+  border-color: var(--teal-700);
+  color: #ffffff;
+  background: linear-gradient(180deg, var(--teal-600), var(--teal-700));
+  box-shadow: 0 10px 20px rgba(8, 123, 126, 0.14);
+}
+
 .btn-primary,
 .btn.primary {
   border-color: var(--blue-700);
@@ -1589,6 +1596,183 @@ svg {
 
 .agenda-full-item.buffer {
   background: #fbfdff;
+}
+
+.kai-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 42;
+  pointer-events: none;
+}
+
+.kai-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 19, 45, 0.28);
+  pointer-events: auto;
+}
+
+.kai-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(520px, 100vw);
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  border-left: 1px solid var(--line);
+  background: #ffffff;
+  box-shadow: -22px 0 54px rgba(7, 23, 53, 0.24);
+  pointer-events: auto;
+}
+
+.kai-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #fbfdff, #ffffff);
+}
+
+.kai-head h2 {
+  margin: 3px 0 4px;
+  color: var(--ink-950);
+  font-size: 25px;
+  line-height: 1.08;
+}
+
+.kai-head p:last-child {
+  margin: 0;
+  color: var(--ink-650);
+  line-height: 1.35;
+}
+
+.kai-source-card,
+.kai-connection-card {
+  margin: 12px 14px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+  padding: 12px;
+}
+
+.kai-source-card {
+  background: linear-gradient(180deg, rgba(0, 91, 255, 0.045), rgba(11, 128, 133, 0.05));
+}
+
+.kai-source-card h3 {
+  margin: 0 0 8px;
+  color: var(--blue-700);
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.kai-context-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.kai-context-chips span {
+  border: 1px solid rgba(11, 128, 133, 0.22);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ink-800);
+  padding: 6px 9px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.kai-connection-card label {
+  display: block;
+  margin: 0 0 6px;
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.kai-connection-card label + .kai-endpoint-row {
+  margin-bottom: 10px;
+}
+
+.kai-endpoint-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.kai-endpoint-row input,
+.kai-composer textarea {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--ink-950);
+  background: #ffffff;
+  padding: 10px 11px;
+  line-height: 1.35;
+}
+
+.kai-connection-card p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.kai-chat-log {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 14px;
+}
+
+.kai-message {
+  max-width: 92%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #f8fbff;
+  padding: 10px 12px;
+}
+
+.kai-message.from-steven {
+  justify-self: end;
+  border-color: rgba(0, 91, 255, 0.24);
+  background: var(--soft-blue);
+}
+
+.kai-message strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.kai-message p {
+  margin: 0;
+  color: var(--ink-800);
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.kai-composer {
+  border-top: 1px solid var(--line);
+  background: #fbfdff;
+  padding: 12px 14px 14px;
+}
+
+.kai-composer-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
 }
 
 .layout-tuner {
