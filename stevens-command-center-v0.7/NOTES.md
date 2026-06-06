@@ -68,11 +68,12 @@
   - per-game materials-covered lists for quick instructor selection
 - Fixed the Games launcher buttons so they render as blue command buttons instead of white boxes.
 - Swapped the previous ADME game target for the 6-stage multitouch A.D.M.E. Arena version.
-- Updated the A.D.M.E. Arena launcher button to link directly to `adme_arena_complete_6_stage_game_multitouch.html`.
-- Published the added game pages into the GitHub Pages checkout:
-  - `airway_math_arena_squad_battle_v4_no_spoiler.html`
-  - `adme_arena_complete.html`
-  - `drug_suffix_game.html`
+- Moved game pages into the GitHub Pages `Games/` folder and updated Steven's launcher links:
+  - `Games/airway_math_arena_squad_battle_v4_no_spoiler.html`
+  - `Games/adme_arena_complete.html`
+  - `Games/adme_arena_complete_6_stage_game_multitouch.html`
+  - `Games/drug_suffix_game.html`
+  - `Games/drug_suffix_matching_game.html`
 - Added interactive Room Energy behavior:
   - green, yellow, and red state buttons
   - gauge needle movement

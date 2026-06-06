@@ -320,7 +320,7 @@
       title: "Airway Math Arena",
       tag: "Squad Battle",
       icon: "&#128640;",
-      url: "https://medek-hub.github.io/canvas-tools/airway_math_arena_squad_battle_v4_no_spoiler.html",
+      url: "https://medek-hub.github.io/canvas-tools/Games/airway_math_arena_squad_battle_v4_no_spoiler.html",
       details: ["No-spoiler airway math arena", "Large touch controls", "Squad scoring"],
       covered: ["Airway vs ventilation", "Breath sounds", "EtCO2 patterns", "Dose/math sprint"]
     },
@@ -328,7 +328,7 @@
       title: "A.D.M.E. Arena",
       tag: "6-Stage Multitouch",
       icon: "&#9889;",
-      url: "https://medek-hub.github.io/canvas-tools/adme_arena_complete_6_stage_game_multitouch.html",
+      url: "https://medek-hub.github.io/canvas-tools/Games/adme_arena_complete_6_stage_game_multitouch.html",
       details: ["Six-stage multitouch game", "Five squad columns", "CSV/JSON metrics"],
       covered: ["PK vs PD", "ADME relay", "Routes", "Receptors", "Safety", "Final chain"]
     },
@@ -336,7 +336,7 @@
       title: "Drug Suffix Game",
       tag: "Medication Patterns",
       icon: "&#128138;",
-      url: "https://medek-hub.github.io/canvas-tools/drug_suffix_game.html",
+      url: "https://medek-hub.github.io/canvas-tools/Games/drug_suffix_game.html",
       details: ["Suffix matching", "Drug family recall", "Fast classroom review"],
       covered: ["Common suffixes", "Medication families", "Pattern recognition", "Recall speed"]
     }
