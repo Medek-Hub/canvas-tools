@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>ADME Arena — Complete 6 Stage Game</title>
+<title>A.D.M.E. Arena</title>
 <style>
 :root{
   --bg:#020713;--cyan:#34d8ff;--gold:#ffcc28;--white:#f6f8fb;--red:#b71c2b;--orange:#d66b0e;--green:#3f9637;--blue:#1769c8;--purple:#7b3fb4;--success:#42ff75;--danger:#ff4f61;--cream:#f1efe8;
@@ -49,7 +49,7 @@ body{display:flex;align-items:center;justify-content:center}
   <div class="app">
     <header class="header">
       <div class="star-wrap"><div class="star"></div></div>
-      <div class="title"><div class="title-main">ADME ARENA: <span>COMPLETE WEEK 1 BATTLE</span></div><div class="title-sub">PK • ADME • Routes • Receptors • Safety • Final Chain</div></div>
+      <div class="title"><div class="title-main">A.D.M.E. ARENA: <span>6 STAGE MULTITOUCH</span></div><div class="title-sub">PK • ADME • Routes • Receptors • Safety • Final Chain</div></div>
       <div class="mode-card"><div class="big" id="stageBig">STAGE 1</div><div class="small" id="stageSmall">PK vs PD</div></div>
     </header>
     <section class="scorebar" id="scorebar"></section>
@@ -154,13 +154,13 @@ function renderChainReveal(correct){const q=currentQ();chainSlots.forEach((v,i)=
 function logQuestion(){const q=currentQ();responses.forEach((r,i)=>{gameLog.push({timestamp:new Date().toISOString(),stageNumber:stageIndex+1,stage:currentStage().name,questionNumber:qIndex+1,question:q.text,topic:q.topic,correctAnswer:q.answer,squad:squads[i].name,selectedAnswer:r?r.choice:"NO_ANSWER",correct:r?String(r.correct):"false",responseSeconds:r?Number(r.seconds.toFixed(2)):"",points:r?r.points:0})})}
 function nextQuestion(){clearInterval(interval);if(phase==="answer"){setPhase("reveal");return}qIndex++;if(qIndex>=currentStage().questions.length){if(stageIndex<stages.length-1){showModal("Stage Complete",`Stage ${stageIndex+1}: ${currentStage().name} is complete.<br><br>Press STAGE to move forward.`)}else showFinal();qIndex=currentStage().questions.length-1;return}responses=Array(5).fill(null);chainSlots=[];chainUsed=[];renderQuestion();setPhase("ready");feedback.textContent="Press START for the next huddle."}
 function nextStage(){clearInterval(interval);if(stageIndex>=stages.length-1){showFinal();return}stageIndex++;qIndex=0;responses=Array(5).fill(null);chainSlots=[];chainUsed=[];renderQuestion();setPhase("ready");feedback.textContent=`Stage ${stageIndex+1}: ${currentStage().name}. Press START.`}
-function resetGame(){clearInterval(interval);squads.forEach(s=>s.points=0);stageIndex=0;qIndex=0;responses=Array(5).fill(null);chainSlots=[];chainUsed=[];gameLog=[];renderQuestion();setPhase("ready");feedback.textContent="Press START. Full 6-stage ADME Arena is ready."}
+function resetGame(){clearInterval(interval);squads.forEach(s=>s.points=0);stageIndex=0;qIndex=0;responses=Array(5).fill(null);chainSlots=[];chainUsed=[];gameLog=[];renderQuestion();setPhase("ready");feedback.textContent="Press START. Full 6-stage A.D.M.E. Arena is ready."}
 function showFinal(){const ranked=[...squads].sort((a,b)=>b.points-a.points),rows=ranked.map((s,i)=>`${i+1}. ${s.name}: ${s.points} pts`).join("<br>");showModal("Game Complete",rows+"<br><br>Use CSV or JSON to review weak topics and squad metrics.")}
 function showHelp(){showModal("How This Works","Each stage uses a 10-second huddle and timed answer race unless listed otherwise. Most stages use five squad columns so multiple runners can answer together. Final Boss uses a shared chain-building board. CSV/JSON exports track response time, accuracy, points, stage, topic, and review-needed metrics.")}
 function showModal(title,text){document.getElementById("modalTitle").innerHTML=title;document.getElementById("modalText").innerHTML=text;document.getElementById("modal").classList.add("show")}function closeModal(){document.getElementById("modal").classList.remove("show")}
 function buildSummary(){const byTopic={};gameLog.forEach(row=>{const key=`${row.stage} | ${row.topic}`;const t=byTopic[key]||(byTopic[key]={stage:row.stage,topic:row.topic,attempts:0,correct:0,totalSeconds:0});t.attempts++;if(row.correct==="true")t.correct++;if(row.responseSeconds!=="")t.totalSeconds+=Number(row.responseSeconds)});Object.keys(byTopic).forEach(k=>{const t=byTopic[k];t.accuracy=t.attempts?Number(((t.correct/t.attempts)*100).toFixed(1)):0;t.avgSeconds=t.attempts?Number((t.totalSeconds/t.attempts).toFixed(2)):0;t.reviewNeeded=t.accuracy<70?"YES":"NO"});return byTopic}
 function downloadCSV(){const summary=buildSummary();let rows=[["TYPE","Timestamp","Stage #","Stage","Question #","Question","Topic","Correct Answer","Squad","Selected Answer","Correct","Response Seconds","Points","Topic Accuracy %","Review Needed"]];gameLog.forEach(r=>{const s=summary[`${r.stage} | ${r.topic}`]||{};rows.push(["ANSWER",r.timestamp,r.stageNumber,r.stage,r.questionNumber,r.question,r.topic,r.correctAnswer,r.squad,r.selectedAnswer,r.correct,r.responseSeconds,r.points,s.accuracy??"",s.reviewNeeded??""])});Object.keys(summary).forEach(k=>{const s=summary[k];rows.push(["SUMMARY","","",s.stage,"","",s.topic,"","","",`${s.correct}/${s.attempts}`,s.avgSeconds,"",s.accuracy,s.reviewNeeded])});const csv=rows.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");downloadFile(csv,"adme_arena_complete_metrics.csv","text/csv")}
-function downloadJSON(){const data={exportedAt:new Date().toISOString(),game:"ADME Arena Complete 6 Stage Game",squads,stages:stages.map((s,i)=>({number:i+1,name:s.name,type:s.type,questions:s.questions})),answers:gameLog,topicSummary:buildSummary()};downloadFile(JSON.stringify(data,null,2),"adme_arena_complete_metrics.json","application/json")}
+function downloadJSON(){const data={exportedAt:new Date().toISOString(),game:"A.D.M.E. Arena",squads,stages:stages.map((s,i)=>({number:i+1,name:s.name,type:s.type,questions:s.questions})),answers:gameLog,topicSummary:buildSummary()};downloadFile(JSON.stringify(data,null,2),"adme_arena_complete_metrics.json","application/json")}
 function downloadFile(content,filename,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},300)}
 renderQuestion();setPhase("ready");renderScorebar();renderPlayArea();
 </script>

@@ -325,12 +325,12 @@
       covered: ["Airway vs ventilation", "Breath sounds", "EtCO2 patterns", "Dose/math sprint"]
     },
     {
-      title: "ADME Arena Complete",
-      tag: "Boss Run",
+      title: "A.D.M.E. Arena",
+      tag: "6-Stage Multitouch",
       icon: "&#9889;",
-      url: "https://medek-hub.github.io/canvas-tools/adme_arena_complete.html",
-      details: ["ADME stage map", "Squad touch mode", "Downloadable metrics"],
-      covered: ["Absorption", "Distribution", "Mechanism", "Evaluation"]
+      url: "https://medek-hub.github.io/canvas-tools/adme_arena_complete_6_stage_game_multitouch.html",
+      details: ["Six-stage multitouch game", "Five squad columns", "CSV/JSON metrics"],
+      covered: ["PK vs PD", "ADME relay", "Routes", "Receptors", "Safety", "Final chain"]
     },
     {
       title: "Drug Suffix Game",

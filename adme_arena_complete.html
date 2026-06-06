@@ -1,794 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>ADME Airway & Fluid Math Arena — Classic Squad Touch</title>
-  <style>
-    :root{
-      --bg:#07111f;
-      --panel:#0d1b2f;
-      --panel2:#13263f;
-      --ink:#eef7ff;
-      --muted:#a9bed3;
-      --blue:#36a3ff;
-      --cyan:#5de1e6;
-      --green:#55d187;
-      --yellow:#ffd166;
-      --orange:#ff9f1c;
-      --red:#ff5c7a;
-      --purple:#b18cff;
-      --card:#10243d;
-      --line:rgba(255,255,255,.13);
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --radius:22px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background:
-        radial-gradient(circle at 14% 10%, rgba(93,225,230,.18), transparent 30%),
-        radial-gradient(circle at 88% 18%, rgba(255,92,122,.16), transparent 29%),
-        radial-gradient(circle at 50% 102%, rgba(177,140,255,.13), transparent 38%),
-        var(--bg);
-      color:var(--ink);
-      min-height:100vh;
-      touch-action:manipulation;
-      overscroll-behavior:none;
-    }
-    button,input,select{font:inherit}
-    button,.touch-btn,.option-tile,.team-option{touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
-    .app{max-width:1280px;margin:0 auto;padding:20px}
-    .hero{
-      position:relative;overflow:hidden;border:1px solid var(--line);
-      background:linear-gradient(135deg, rgba(19,38,63,.94), rgba(8,17,31,.96));
-      border-radius:32px;box-shadow:var(--shadow);padding:26px;
-    }
-    .hero:before{
-      content:"";position:absolute;inset:0;pointer-events:none;opacity:.9;
-      background:linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),linear-gradient(0deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size:34px 34px;mask-image:linear-gradient(to bottom, black, transparent 80%);
-    }
-    .hero:after{content:"ADME";position:absolute;right:-18px;bottom:-38px;font-size:128px;font-weight:1000;color:rgba(255,255,255,.035);letter-spacing:-9px;pointer-events:none}
-    .topbar{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
-    .brand{display:flex;gap:14px;align-items:center;min-width:280px;flex:1}
-    .logo{width:68px;height:68px;border-radius:22px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;color:#06111f;font-weight:1000;font-size:28px;box-shadow:0 10px 30px rgba(54,163,255,.26);transform:rotate(-3deg)}
-    h1{margin:0;font-size:clamp(30px,4.3vw,58px);line-height:.94;letter-spacing:-1.7px}
-    .subtitle{color:var(--muted);font-size:16px;margin:8px 0 0;max-width:830px;line-height:1.48}
-    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    button,.button{border:0;border-radius:16px;padding:12px 16px;background:linear-gradient(135deg,var(--blue),#2577d8);color:white;font-weight:950;letter-spacing:.2px;cursor:pointer;box-shadow:0 9px 24px rgba(54,163,255,.22);transition:.14s ease transform,.14s ease filter;text-decoration:none;display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:46px}
-    button:hover{transform:translateY(-1px);filter:brightness(1.08)}
-    button:active,.option-tile:active,.team-option:active{transform:scale(.985)}
-    button.secondary{background:rgba(255,255,255,.08);border:1px solid var(--line);box-shadow:none;color:var(--ink)}
-    button.green{background:linear-gradient(135deg,var(--green),#18a463);box-shadow:0 9px 24px rgba(85,209,135,.20)}
-    button.yellow{background:linear-gradient(135deg,var(--yellow),#f2a900);color:#1a1200;box-shadow:0 9px 24px rgba(255,209,102,.20)}
-    button.red{background:linear-gradient(135deg,var(--red),#d42e4e);box-shadow:0 9px 24px rgba(255,92,122,.20)}
-    button:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
-    .badgeRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;position:relative;z-index:2}
-    .badge{border:1px solid var(--line);background:rgba(255,255,255,.06);padding:8px 11px;border-radius:999px;color:var(--ink);font-size:13px;font-weight:800}.badge strong{color:var(--yellow)}
-    .setup{display:grid;gap:14px;margin-top:18px;position:relative;z-index:2}
-    .setupGrid{display:grid;grid-template-columns:1.2fr 220px 160px 220px;gap:12px}
-    label{font-size:12px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.8px;margin:0 0 6px;display:block}
-    input,select{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--ink);border-radius:15px;padding:12px 13px;outline:none} option{background:#0d1b2f;color:#eef7ff}
-    input:focus,select:focus{border-color:rgba(93,225,230,.8);box-shadow:0 0 0 4px rgba(93,225,230,.12)}
-    .callout{border:1px solid rgba(93,225,230,.35);background:rgba(93,225,230,.08);border-radius:18px;padding:12px;color:#dffcff;line-height:1.45;font-size:14px}.danger{border-color:rgba(255,92,122,.45);background:rgba(255,92,122,.09);color:#ffe4ea}.success{border-color:rgba(85,209,135,.45);background:rgba(85,209,135,.09);color:#eafff2}
-    .gameShell{display:none;grid-template-columns:330px 1fr;gap:18px;margin-top:18px}.gameShell.show{display:grid}
-    .card{border:1px solid var(--line);background:linear-gradient(180deg, rgba(16,36,61,.94), rgba(10,22,39,.94));border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}.side .card{margin-bottom:16px}
-    .sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}.sectionTitle h2,.sectionTitle h3{margin:0}.mini{font-size:12px;color:var(--muted);line-height:1.45}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(255,255,255,.07);border-radius:999px;padding:6px 9px;font-weight:900;font-size:12px;color:#dbefff}
-    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center}.stat .num{font-size:24px;font-weight:1000;color:var(--cyan)}.stat .lbl{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.8px}
-    .teamBoard{display:grid;gap:10px}.teamScore{border:1px solid var(--line);border-left:6px solid var(--blue);background:rgba(255,255,255,.045);border-radius:18px;padding:10px}.teamScore .row{display:flex;justify-content:space-between;gap:10px;align-items:center}.teamScore strong{font-size:15px}.teamScore .small{font-size:12px;color:var(--muted)}.teamScore.t1{border-left-color:var(--cyan)}.teamScore.t2{border-left-color:var(--green)}.teamScore.t3{border-left-color:var(--yellow)}.teamScore.t4{border-left-color:var(--red)}
-    .squadPickerWrap{border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:22px;padding:14px;margin:14px 0}.squadPickerTop{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}.squadPickerTop h3{margin:0;font-size:16px}.squadPickerTop .mini{color:var(--muted);font-size:12px;line-height:1.35}.squadPicker{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.squadToggle{min-height:66px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.055);color:var(--ink);cursor:pointer;text-align:left;padding:10px 12px;display:flex;align-items:center;gap:10px}.squadToggle .emoji{font-size:28px}.squadToggle .name{font-weight:1000}.squadToggle .status{display:block;font-size:12px;color:var(--muted);margin-top:2px}.squadToggle.active{border-color:rgba(93,225,230,.95);background:linear-gradient(135deg,rgba(93,225,230,.22),rgba(54,163,255,.10));box-shadow:0 0 0 4px rgba(93,225,230,.08)}.squadTools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.squadTools button{padding:9px 12px;border-radius:14px;font-size:13px}
-    .stageMap{display:grid;gap:10px}.stage{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:18px;padding:12px;display:flex;gap:10px;align-items:flex-start}.stage .letter{width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-weight:1000;color:var(--cyan)}.stage.active{border-color:rgba(93,225,230,.65);box-shadow:0 0 0 4px rgba(93,225,230,.08)}.stage.done .letter{background:linear-gradient(135deg,var(--green),#18a463);color:#07111f}.stage .name{font-weight:950}.stage .desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.3}
-    .formulaList{display:grid;gap:9px}.formula{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:14px;padding:9px;font-size:13px}.formula code{color:var(--yellow);white-space:normal}
-    .mainPanel{min-height:720px}.questionHeader{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}.progressShell{height:14px;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;overflow:hidden}.progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width .35s ease}.timerBar{height:10px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:8px}.timerFill{height:100%;width:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));transition:width .2s linear}
-    .questionCard{border:1px solid var(--line);background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border-radius:24px;padding:20px;margin-bottom:16px}.scenario{font-size:15px;color:#dbefff;line-height:1.5;margin-bottom:12px}.questionText{font-size:clamp(21px,3.1vw,36px);line-height:1.12;font-weight:1000;letter-spacing:-.8px;margin:0 0 14px}.clueBox{border-left:5px solid var(--yellow);background:rgba(255,209,102,.10);border-radius:14px;padding:10px 12px;color:#fff3c4;font-size:14px;margin-top:12px}
-    .optionGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.option-tile{min-height:90px;border:1px solid var(--line);background:rgba(255,255,255,.07);border-radius:20px;padding:14px;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;transition:.16s ease transform,.16s ease border-color,.16s ease background}.option-tile .letter{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#06111f;font-weight:1000;flex:0 0 auto}.option-tile .txt{font-weight:900;font-size:18px}.option-tile.selected{border-color:rgba(93,225,230,.8);background:rgba(93,225,230,.13);box-shadow:0 0 0 4px rgba(93,225,230,.08)}.option-tile.correct{border-color:rgba(85,209,135,.85);background:rgba(85,209,135,.15)}.option-tile.wrong{border-color:rgba(255,92,122,.85);background:rgba(255,92,122,.13)}
-    .touchArena{display:grid;gap:14px}.teamPads{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.teamPad{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:22px;padding:12px}.teamPad.locked{opacity:.88}.teamPadHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.teamPadHeader strong{font-size:17px}.lockBadge{font-size:12px;color:var(--muted);font-weight:900}.teamOptions{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.team-option{min-height:60px;border:1px solid var(--line);background:rgba(255,255,255,.075);border-radius:16px;color:var(--ink);font-weight:1000;font-size:20px;display:grid;place-items:center;cursor:pointer}.team-option.selected{border-color:rgba(93,225,230,.9);background:rgba(93,225,230,.18)}.team-option.correct{border-color:rgba(85,209,135,.9);background:rgba(85,209,135,.2)}.team-option.wrong{border-color:rgba(255,92,122,.9);background:rgba(255,92,122,.18)}
-    .feedback{display:none;border:1px solid var(--line);border-radius:20px;padding:16px;margin:14px 0;line-height:1.5}.feedback.show{display:block}.feedback.correct{background:rgba(85,209,135,.10);border-color:rgba(85,209,135,.45)}.feedback.wrong{background:rgba(255,92,122,.10);border-color:rgba(255,92,122,.45)}.feedback.neutral{background:rgba(93,225,230,.08);border-color:rgba(93,225,230,.35)}.feedback h3{margin:0 0 8px;font-size:19px}.feedback .steps{color:#dceeff;font-size:14px}.hidden{display:none!important}
-    .dashboard{display:none;gap:16px}.dashboard.show{display:grid}.topicGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.topic{border:1px solid var(--line);background:rgba(255,255,255,.055);border-radius:18px;padding:13px}.topic strong{display:block;color:var(--yellow);margin-bottom:4px}.topic .bar{height:10px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:10px;overflow:hidden}.topic .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));width:0}.tableWrap{overflow:auto;border-radius:18px;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;font-size:13px;min-width:860px;background:rgba(255,255,255,.035)}th,td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{background:rgba(255,255,255,.08);color:var(--cyan);font-size:12px;text-transform:uppercase;letter-spacing:.8px}tr:last-child td{border-bottom:0}
-    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:#091624;color:white;border:1px solid var(--line);border-radius:16px;padding:12px 16px;box-shadow:var(--shadow);z-index:1000;transition:.25s ease transform;max-width:92vw;text-align:center}.toast.show{transform:translateX(-50%) translateY(0)}
-    .footerNote{font-size:12px;color:var(--muted);line-height:1.45;margin-top:12px}
-    @media(max-width:980px){.gameShell{grid-template-columns:1fr}.setupGrid{grid-template-columns:1fr 1fr}.side{order:2}.main{order:1}.teamPads,.topicGrid{grid-template-columns:1fr}.squadPicker{grid-template-columns:repeat(2,1fr)}.mainPanel{min-height:auto}}
-    @media(max-width:680px){.app{padding:12px}.hero{padding:18px;border-radius:24px}.brand{align-items:flex-start}.logo{width:56px;height:56px}.setupGrid,.optionGrid,.squadPicker{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.teamOptions{grid-template-columns:repeat(4,1fr)}.team-option{min-height:54px}}
-    @media print{body{background:white;color:black}.hero,.card,.questionCard{box-shadow:none;background:white;color:black;border:1px solid #bbb}.setup,.controls,.side,#gameCard{display:none!important}.dashboard{display:grid!important}.button,button{display:none!important}table{color:black}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>A.D.M.E. Arena</title>
+<style>
+:root{
+  --bg:#020713;--cyan:#34d8ff;--gold:#ffcc28;--white:#f6f8fb;--red:#b71c2b;--orange:#d66b0e;--green:#3f9637;--blue:#1769c8;--purple:#7b3fb4;--success:#42ff75;--danger:#ff4f61;--cream:#f1efe8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020713;color:var(--white);font-family:Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif}
+html,body,.board,.app,.play-area,.choice,.tile,.slot,button{touch-action:none;-ms-touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.choice,.tile,.slot,button{-webkit-tap-highlight-color:transparent}
+body{display:flex;align-items:center;justify-content:center}
+.board{width:100vw;height:100vh;min-width:920px;min-height:520px;position:relative;overflow:hidden;background:radial-gradient(circle at 10% 0%,rgba(52,216,255,.18),transparent 23%),radial-gradient(circle at 84% 0%,rgba(255,204,40,.10),transparent 22%),linear-gradient(135deg,#03101e,#08213b 50%,#020713)}
+.board:before{content:"";position:absolute;inset:0;background:linear-gradient(30deg,transparent 24%,rgba(52,216,255,.045) 25%,transparent 26%,transparent 74%,rgba(52,216,255,.045) 75%,transparent 76%),linear-gradient(150deg,transparent 24%,rgba(52,216,255,.035) 25%,transparent 26%,transparent 74%,rgba(52,216,255,.035) 75%,transparent 76%);background-size:90px 90px;opacity:.72;pointer-events:none}
+.app{position:relative;z-index:2;width:100%;height:100%;padding:clamp(8px,1.05vmin,16px);display:grid;grid-template-rows:clamp(54px,8vh,76px) clamp(56px,8.7vh,82px) clamp(96px,17vh,146px) minmax(210px,1fr) clamp(82px,14vh,124px);gap:clamp(6px,.85vmin,11px)}
+.panel{border:clamp(1px,.16vmin,3px) solid rgba(52,216,255,.32);border-radius:clamp(10px,1.2vmin,18px);background:linear-gradient(180deg,rgba(8,28,48,.96),rgba(2,8,18,.98));box-shadow:inset 0 0 16px rgba(52,216,255,.10),0 0 14px rgba(0,0,0,.72)}
+.header{display:grid;grid-template-columns:minmax(58px,8%) 1fr minmax(170px,18%);align-items:center;gap:clamp(8px,1vmin,14px)}
+.star-wrap{height:100%;display:flex;align-items:center;justify-content:center}.star{height:min(92%,68px);aspect-ratio:1;position:relative;filter:drop-shadow(0 0 10px rgba(52,216,255,.75))}
+.star:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#f8fcff,#d8f0ff 45%,#8acbff);clip-path:polygon(50% 0%,61% 31%,95% 22%,74% 50%,95% 78%,61% 69%,50% 100%,39% 69%,5% 78%,26% 50%,5% 22%,39% 31%)}
+.star:after{content:"⚕";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#0b315f;font-family:Arial Black,Arial,sans-serif;font-size:clamp(28px,4vmin,46px)}
+.title{text-align:center;text-shadow:0 2px #000,0 0 12px rgba(52,216,255,.4);line-height:1}.title-main{font-size:clamp(21px,3vmin,39px);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}.title-main span{color:var(--gold)}.title-sub{margin-top:3px;font-family:Arial Black,Arial,sans-serif;font-size:clamp(10px,1.25vmin,15px);letter-spacing:.07em;color:#dcecf7;white-space:nowrap}
+.mode-card{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;border-radius:clamp(10px,1vmin,15px);border:1px solid rgba(52,216,255,.32);background:linear-gradient(180deg,rgba(21,65,100,.7),rgba(3,13,25,.95))}.mode-card .big{color:var(--gold);font-size:clamp(17px,2.2vmin,28px);letter-spacing:.08em}.mode-card .small{font-family:Arial Black,Arial,sans-serif;font-size:clamp(9px,1.1vmin,14px);color:var(--cyan);letter-spacing:.08em;text-align:center}
+.scorebar{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(6px,.8vmin,10px)}
+.score{position:relative;border-radius:clamp(10px,1.1vmin,15px);border:1px solid rgba(255,255,255,.25);display:grid;grid-template-columns:clamp(34px,4.4vmin,50px) 1fr;align-items:center;padding:clamp(5px,.8vmin,9px);overflow:hidden;box-shadow:inset 0 0 13px rgba(255,255,255,.10),0 0 10px rgba(0,0,0,.65)}.score:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.15),transparent 45%,rgba(0,0,0,.25))}
+.red{background:var(--red)}.orange{background:var(--orange)}.green{background:var(--green)}.blue{background:var(--blue)}.purple{background:var(--purple)}
+.score .icon{z-index:1;width:clamp(30px,4vmin,46px);aspect-ratio:1;border-radius:50%;border:2px solid rgba(255,255,255,.75);background:rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;font-size:clamp(16px,2.2vmin,26px)}.score .meta{z-index:1;text-align:center;line-height:1}.score .name{font-size:clamp(13px,1.6vmin,21px);letter-spacing:.08em}.score .points{margin-top:3px;font-size:clamp(20px,2.8vmin,36px);letter-spacing:.04em}.score .status{min-height:14px;font-family:Arial Black,Arial,sans-serif;font-size:clamp(8px,1vmin,13px);color:#fff6c8}
+.question-wrap{display:grid;grid-template-columns:minmax(118px,14%) 1fr minmax(145px,16%);gap:clamp(8px,1vmin,14px);align-items:stretch;padding:clamp(8px,1vmin,14px)}
+.round-badge{border-radius:clamp(10px,1.1vmin,16px);background:linear-gradient(180deg,#bd1726,#700711);border:1px solid rgba(255,255,255,.24);display:flex;flex-direction:column;align-items:center;justify-content:center;text-shadow:0 2px #000;text-align:center}.round-badge .round{font-size:clamp(10px,1.25vmin,16px);letter-spacing:.1em}.round-badge .num{font-size:clamp(32px,5vmin,60px);line-height:.95}.round-badge .label{font-family:Arial Black,Arial,sans-serif;font-size:clamp(8px,1vmin,13px);color:#ffd8dc;line-height:1.1}
+.question-box{border-radius:clamp(12px,1.2vmin,18px);background:linear-gradient(180deg,#fff,#eceae4);color:#111;border:2px solid rgba(0,0,0,.45);box-shadow:0 6px 12px rgba(0,0,0,.30);display:grid;grid-template-columns:clamp(56px,9%,90px) 1fr;align-items:center;padding:clamp(8px,1vmin,14px);min-width:0}.q-icon{text-align:center;font-size:clamp(34px,5.2vmin,66px)}.q-text{font-family:Arial Black,Arial,sans-serif;font-size:clamp(21px,3.35vmin,44px);line-height:1.05;letter-spacing:.018em}
+.timer-box{border-radius:clamp(12px,1.2vmin,18px);border:1px solid rgba(255,255,255,.25);background:linear-gradient(180deg,#123754,#061323);display:flex;align-items:center;justify-content:center;gap:clamp(6px,.8vmin,12px);box-shadow:inset 0 0 12px rgba(255,255,255,.08)}.clock{font-size:clamp(28px,4.4vmin,54px)}.timer-meta{line-height:1}.timer-label{font-family:Arial Black,Arial,sans-serif;font-size:clamp(9px,1.1vmin,15px);letter-spacing:.08em;color:#d9e8f6}.timer{font-size:clamp(32px,5vmin,62px);color:var(--gold);letter-spacing:.05em}.timer.low{color:var(--danger);animation:pulse .8s infinite}@keyframes pulse{50%{filter:brightness(1.75);transform:scale(1.05)}}
+.play-area{display:grid;min-height:0}.answers-area{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(6px,.8vmin,10px);min-height:0}.squad-column{border-radius:clamp(12px,1.3vmin,18px);border:1px solid rgba(255,255,255,.25);display:grid;grid-template-rows:clamp(42px,13%,62px) 1fr clamp(40px,17%,70px);overflow:hidden;box-shadow:inset 0 0 14px rgba(255,255,255,.09),0 0 10px rgba(0,0,0,.7);position:relative;min-width:0}.squad-column:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.12),transparent 35%,rgba(0,0,0,.24));pointer-events:none}.squad-column.red{background:linear-gradient(180deg,#c82735,#89111b)}.squad-column.orange{background:linear-gradient(180deg,#df7b1e,#8e4307)}.squad-column.green{background:linear-gradient(180deg,#50a948,#246b23)}.squad-column.blue{background:linear-gradient(180deg,#2482e5,#114a96)}.squad-column.purple{background:linear-gradient(180deg,#884fc3,#4b2174)}
+.col-head{z-index:1;border-bottom:1px solid rgba(255,255,255,.22);display:flex;flex-direction:column;justify-content:center;align-items:center;text-shadow:0 2px #000}.col-head .name{font-size:clamp(14px,1.9vmin,26px);letter-spacing:.07em}.col-head .rank{font-family:Arial Black,Arial,sans-serif;font-size:clamp(8px,1vmin,13px);color:#fff6ce;letter-spacing:.04em;white-space:nowrap}
+.answer-buttons{z-index:1;padding:clamp(8px,1.2vmin,16px);display:grid;gap:clamp(7px,1vmin,13px);min-height:0}.choice{border-radius:clamp(10px,1.2vmin,18px);border:2px solid rgba(255,255,255,.42);background:linear-gradient(180deg,#fff,#e6e6e6);color:#111;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;cursor:pointer;box-shadow:0 6px 10px rgba(0,0,0,.33);transition:.12s transform,.12s filter,.12s box-shadow;min-height:0;padding:4px}.choice:hover{transform:scale(1.018);filter:brightness(1.05)}.choice.disabled{pointer-events:none;opacity:.54}.choice .abbr{font-size:clamp(24px,4.4vmin,58px);letter-spacing:.04em;line-height:.9}.choice .full{margin-top:4px;font-family:Arial Black,Arial,sans-serif;font-size:clamp(8px,1.1vmin,14px);letter-spacing:.025em}.choice.selected{outline:clamp(3px,.45vmin,6px) solid var(--gold);box-shadow:0 0 16px rgba(255,204,40,.9),0 6px 10px rgba(0,0,0,.33)}.choice.correct{outline:clamp(3px,.45vmin,6px) solid var(--success);box-shadow:0 0 16px rgba(66,255,117,.9)}.choice.wrong{outline:clamp(3px,.45vmin,6px) solid var(--danger);box-shadow:0 0 16px rgba(255,79,97,.9)}
+.result{z-index:1;border-top:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;text-align:center;padding:clamp(5px,.8vmin,9px);font-family:Arial Black,Arial,sans-serif;font-size:clamp(9px,1.1vmin,14px);line-height:1.16;color:#fff;text-shadow:0 1px #000}.waiting{color:#e6f1fb}.locked{color:#fff0a8}.good{color:#c4ffd5}.bad{color:#ffd0d5}
+.chain-area{display:grid;grid-template-rows:48% 1fr;gap:clamp(8px,.9vmin,12px);min-height:0}.chain-slots,.tile-bank{display:grid;gap:clamp(6px,.8vmin,10px)}.chain-slots{grid-template-columns:repeat(6,1fr)}.tile-bank{grid-template-columns:repeat(6,1fr)}
+.slot,.tile{border-radius:clamp(10px,1.1vmin,16px);display:flex;align-items:center;justify-content:center;text-align:center;padding:clamp(5px,.8vmin,10px);font-family:Arial Black,Arial,sans-serif;line-height:1.1;min-width:0}.slot{border:2px dashed rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#d8eafd;font-size:clamp(11px,1.35vmin,17px)}.slot.filled{background:linear-gradient(180deg,#fff,#e6e6e6);color:#111;border-style:solid}.tile{background:linear-gradient(180deg,#fff,#e6e6e6);color:#111;border:2px solid rgba(255,255,255,.4);font-size:clamp(12px,1.6vmin,20px);cursor:pointer;box-shadow:0 6px 10px rgba(0,0,0,.33)}.tile.used{opacity:.28;pointer-events:none}.tile.correct{outline:4px solid var(--success)}.tile.wrong{outline:4px solid var(--danger)}
+.footer{display:grid;grid-template-columns:minmax(135px,16%) 1fr minmax(390px,34%);gap:clamp(6px,.8vmin,10px);min-height:0}.phase-panel,.feedback-panel,.controls{border-radius:clamp(10px,1.1vmin,16px);border:1px solid rgba(52,216,255,.32);background:linear-gradient(180deg,rgba(11,36,60,.97),rgba(3,11,24,.98));box-shadow:inset 0 0 12px rgba(52,216,255,.10)}.phase-panel{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.phase{color:var(--gold);font-size:clamp(19px,2.55vmin,34px);letter-spacing:.08em;line-height:1}.phase-small{margin-top:3px;font-family:Arial Black,Arial,sans-serif;color:#dcecf7;font-size:clamp(9px,1.05vmin,14px);letter-spacing:.06em}.feedback-panel{display:flex;align-items:center;justify-content:center;text-align:center;padding:0 clamp(10px,1.2vmin,18px);font-family:Arial Black,Arial,sans-serif;font-size:clamp(12px,1.45vmin,18px);line-height:1.18;color:#eff7ff}.controls{padding:clamp(6px,.8vmin,10px);display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(4px,.6vmin,8px)}button{border-radius:clamp(8px,.9vmin,12px);border:1px solid rgba(255,255,255,.26);background:linear-gradient(180deg,#164262,#071523);color:white;font-family:Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif;font-size:clamp(10px,1.2vmin,16px);letter-spacing:.035em;cursor:pointer;text-shadow:0 1px #000;box-shadow:inset 0 0 10px rgba(255,255,255,.08),0 3px 7px rgba(0,0,0,.4)}button:hover{filter:brightness(1.18)}.start{background:linear-gradient(180deg,#43a83d,#1d611f)}.next{background:linear-gradient(180deg,#2583e6,#104f9e)}.reset{background:linear-gradient(180deg,#d93645,#76101a)}.sound,.data{background:linear-gradient(180deg,#dbad16,#71500a)}
+.modal{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.82);z-index:20}.modal.show{display:flex}.modal-card{width:min(860px,78vw);border:2px solid var(--cyan);border-radius:18px;background:linear-gradient(180deg,#102d4b,#061321);box-shadow:0 0 25px rgba(52,216,255,.55);text-align:center;padding:24px}.modal-card h2{margin:0 0 10px;color:var(--gold);font-size:clamp(30px,4vmin,52px);text-shadow:0 2px #000}.modal-card p{font-family:Arial Black,Arial,sans-serif;font-size:clamp(14px,1.75vmin,22px);line-height:1.35;color:#eef7ff}.modal-card button{width:150px;height:48px;margin-top:8px}
+.rotate{display:none;position:fixed;inset:0;z-index:999;background:#020713;color:#fff;align-items:center;justify-content:center;text-align:center;padding:8vw;font-family:Arial Black,Arial,sans-serif;line-height:1.35}
+@media(max-width:1050px){.board{min-width:0;min-height:0}.app{padding:6px;gap:5px}.score .icon{display:none}.score{grid-template-columns:1fr}.footer{grid-template-columns:14% 1fr 38%}.controls{grid-template-columns:repeat(5,1fr)}.question-wrap{grid-template-columns:11% 1fr 15%}.round-badge .label{display:none}.q-text{font-size:clamp(18px,3.5vw,34px)}.choice .abbr{font-size:clamp(24px,5vw,48px)}.choice .full{font-size:clamp(7px,1.2vw,11px)}}
+@media(max-aspect-ratio:1/1){.rotate{display:flex}}
+</style>
 </head>
 <body>
+<div class="rotate">Rotate to landscape for the 5-squad touchscreen layout.</div>
+<div class="board">
   <div class="app">
-    <section class="hero" id="hero">
-      <div class="topbar">
-        <div class="brand">
-          <div class="logo">A</div>
-          <div>
-            <h1>ADME Math Arena</h1>
-            <p class="subtitle">Classic ADME look with Squad Touch controls for airway medication math, epinephrine volume, drip rates, and fluid resuscitation. Built for the classroom board, big fingers, and teams that swear they “totally had the right answer.”</p>
-          </div>
-        </div>
-        <div class="controls">
-          <button class="secondary" id="soundBtn">🔊 Sound: On</button>
-          <button class="secondary" id="fullBtn">⛶ Fullscreen</button>
-          <button class="secondary" onclick="window.print()">🖨️ Print Report</button>
-        </div>
-      </div>
-      <div class="badgeRow">
-        <span class="badge"><strong>A</strong>irway math</span>
-        <span class="badge"><strong>D</strong>rip rates</span>
-        <span class="badge"><strong>M</strong>L from concentration</span>
-        <span class="badge"><strong>E</strong>mergency fluids</span>
-        <span class="badge"><strong>Touch</strong> board ready</span>
-      </div>
-      <div class="setup" id="setup">
-        <div class="callout danger"><strong>Training note:</strong> This is a classroom practice tool. Dose rules are written inside the questions for math practice. Students should always follow local protocols, medical direction, and course instructions in real care.</div>
-        <div class="setupGrid">
-          <div><label for="playerName">Class / Section Name</label><input id="playerName" placeholder="Example: EMSP 2306 Week 2" value="EMSP 2306" /></div>
-          <div><label for="modeSelect">Game Mode</label><select id="modeSelect"><option value="touch" selected>Squad Touch Mode</option><option value="solo">Solo / One Squad Mode</option><option value="challenge">Challenge Timer</option></select></div>
-          <div><label for="teamCount">Active Squad Pads</label><select id="teamCount"><option value="2">2 squads at board</option><option value="3">3 squads at board</option><option value="4" selected>4 squads at board</option></select></div>
-          <div><label for="questionCount">Questions</label><select id="questionCount"><option value="8">8 quick calls</option><option value="12" selected>12 class round</option><option value="20">20 full round</option><option value="24">24 boss round</option></select></div>
-        </div>
-        <div class="squadPickerWrap" id="squadPickerWrap">
-          <div class="squadPickerTop">
-            <div><h3>Choose which squads go up</h3><div class="mini" id="activeSquadHint">Pick the squads answering on the board this round.</div></div>
-            <span class="pill">Rotation friendly</span>
-          </div>
-          <div class="squadPicker" id="squadPicker"></div>
-          <div class="squadTools">
-            <button class="secondary" id="nextSquadsBtn" type="button">🔁 Auto-pick next set</button>
-            <button class="secondary" id="resetSquadsBtn" type="button">↩️ Reset to Alpha–Delta</button>
-          </div>
-        </div>
-        <div class="controls"><button class="green" id="startBtn">🚑 Start Touch Round</button><button class="secondary" id="previewBtn">👀 Preview Question Bank</button></div>
-      </div>
+    <header class="header">
+      <div class="star-wrap"><div class="star"></div></div>
+      <div class="title"><div class="title-main">A.D.M.E. ARENA: <span>6 STAGE MULTITOUCH</span></div><div class="title-sub">PK • ADME • Routes • Receptors • Safety • Final Chain</div></div>
+      <div class="mode-card"><div class="big" id="stageBig">STAGE 1</div><div class="small" id="stageSmall">PK vs PD</div></div>
+    </header>
+    <section class="scorebar" id="scorebar"></section>
+    <section class="question-wrap panel">
+      <div class="round-badge"><div class="round" id="roundLabel">STAGE</div><div class="num" id="questionNum">1</div><div class="label" id="questionTotal">of 10</div></div>
+      <div class="question-box"><div class="q-icon" id="qIcon">🧫</div><div class="q-text" id="qText">Drug is absorbed through mucosa</div></div>
+      <div class="timer-box"><div class="clock">◷</div><div class="timer-meta"><div class="timer-label" id="timerLabel">READY</div><div class="timer" id="timer">10</div></div></div>
     </section>
-
-    <section class="gameShell" id="gameArea">
-      <aside class="side">
-        <div class="card">
-          <div class="sectionTitle"><h3>Mission Monitor</h3><span class="pill" id="qCounter">0/0</span></div>
-          <div class="stats">
-            <div class="stat"><div class="num" id="classScore">0</div><div class="lbl">Class Score</div></div>
-            <div class="stat"><div class="num" id="accuracyNum">0%</div><div class="lbl">Class Accuracy</div></div>
-            <div class="stat"><div class="num" id="timeNum">0:00</div><div class="lbl">Elapsed</div></div>
-            <div class="stat"><div class="num" id="lockedNum">0</div><div class="lbl">Locked In</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="sectionTitle"><h3>Squad Scores</h3><span class="pill">Touch ready</span></div>
-          <div class="teamBoard" id="teamBoard"></div>
-        </div>
-        <div class="card">
-          <div class="sectionTitle"><h3>ADME Stage Map</h3><span class="pill" id="stagePillMini">Stage</span></div>
-          <div class="stageMap" id="stageMap"></div>
-        </div>
-        <div class="card">
-          <div class="sectionTitle"><h3>Formula Backpack</h3><span class="pill">Use it</span></div>
-          <div class="formulaList">
-            <div class="formula"><code>kg = lb ÷ 2.2</code></div>
-            <div class="formula"><code>mL = desired dose ÷ concentration</code></div>
-            <div class="formula"><code>fluid bolus = mL/kg × kg</code></div>
-            <div class="formula"><code>gtt/min = (mL × drop factor) ÷ minutes</code></div>
-            <div class="formula"><code>mcg/min total = mcg/min × minutes</code></div>
-          </div>
-        </div>
-      </aside>
-
-      <main class="main">
-        <div class="card mainPanel" id="gameCard">
-          <div class="questionHeader">
-            <div><span class="pill" id="stagePill">Stage</span> <span class="pill" id="topicPill">Topic</span></div>
-            <div style="min-width:260px;flex:1;max-width:520px"><div class="progressShell"><div class="progressFill" id="progressFill"></div></div><div class="timerBar"><div class="timerFill" id="timerFill"></div></div></div>
-          </div>
-          <div class="questionCard">
-            <div class="scenario" id="scenarioText"></div>
-            <div class="questionText" id="questionText"></div>
-            <div class="clueBox" id="clueBox"></div>
-            <div id="answerArea"></div>
-          </div>
-          <div class="feedback" id="feedbackBox"></div>
-          <div class="controls">
-            <button id="revealBtn" class="yellow">📣 Reveal / Check Answers</button>
-            <button class="secondary" id="hintBtn">💡 Hint</button>
-            <button class="green hidden" id="nextBtn">Next Call →</button>
-            <button class="secondary" id="skipBtn">Skip</button>
-            <button class="red" id="quitBtn">End Round</button>
-          </div>
-        </div>
-
-        <div class="card dashboard" id="dashboard">
-          <div class="sectionTitle"><h2>Mission Debrief</h2><span class="pill" id="finalName">Class</span></div>
-          <div class="stats">
-            <div class="stat"><div class="num" id="finalScore">0</div><div class="lbl">Class Score</div></div>
-            <div class="stat"><div class="num" id="finalAccuracy">0%</div><div class="lbl">Class Accuracy</div></div>
-            <div class="stat"><div class="num" id="finalTime">0:00</div><div class="lbl">Time</div></div>
-            <div class="stat"><div class="num" id="finalGrade">-</div><div class="lbl">Readiness Level</div></div>
-          </div>
-          <div class="callout success" id="debriefMessage"></div>
-          <div><h3>Squad Results</h3><div class="teamBoard" id="finalTeams"></div></div>
-          <div><h3>Topic Performance</h3><div class="topicGrid" id="topicGrid"></div></div>
-          <div><h3>Instructor Review Table</h3><div class="tableWrap"><table id="reviewTable"></table></div></div>
-          <div class="controls"><button class="green" id="downloadJsonBtn">⬇️ Download JSON Metrics</button><button class="secondary" id="downloadCsvBtn">⬇️ Download CSV</button><button class="secondary" id="copySummaryBtn">📋 Copy Summary</button><button id="restartBtn">🔁 Play Again</button></div>
-          <div class="footerNote">Metrics are for classroom review and identifying topics needing more practice.</div>
-        </div>
-
-        <div class="card dashboard" id="bankPreview">
-          <div class="sectionTitle"><h2>Question Bank Preview</h2><button class="secondary" id="closePreviewBtn">Close</button></div>
-          <div class="tableWrap"><table id="bankTable"></table></div>
-        </div>
-      </main>
-    </section>
+    <section class="play-area" id="playArea"></section>
+    <footer class="footer">
+      <div class="phase-panel"><div class="phase" id="phaseTitle">READY</div><div class="phase-small" id="phaseSmall">Press start</div></div>
+      <div class="feedback-panel" id="feedback">Press START. Squads get 10 seconds to huddle, then 20 seconds for all five runners to answer in their own color column.</div>
+      <div class="controls">
+        <button class="start" onclick="startGame()">▶ START</button><button onclick="pauseGame()">⏸ PAUSE</button><button class="next" onclick="nextQuestion()">➡ NEXT</button><button class="next" onclick="nextStage()">⏭ STAGE</button><button class="reset" onclick="resetGame()">↻ RESET</button>
+        <button class="sound" onclick="toggleSound()" id="soundBtn">🔊 SOUND</button><button onclick="testSounds()">♪ TEST</button><button class="data" onclick="downloadCSV()">⬇ CSV</button><button class="data" onclick="downloadJSON()">⬇ JSON</button><button onclick="showHelp()">? HELP</button>
+      </div>
+    </footer>
   </div>
-  <div class="toast" id="toast"></div>
-
+  <div class="modal" id="modal"><div class="modal-card"><h2 id="modalTitle">Round Results</h2><p id="modalText"></p><button class="start" onclick="closeModal()">OK</button></div></div>
+</div>
 <script>
-const stages = [
-  { key:'A', name:'Absorption Airway Alley', desc:'Weight, route, and nebulized med setup' },
-  { key:'D', name:'Distribution Dock', desc:'Fluid boluses and volume movement' },
-  { key:'M', name:'Metabolism Math Lab', desc:'Concentrations, drips, and time' },
-  { key:'E', name:'Excretion Exit Check', desc:'Mixed safety and reassessment' }
-];
+const squads=[{name:"Squad 1",color:"red",points:0},{name:"Squad 2",color:"orange",points:0},{name:"Squad 3",color:"green",points:0},{name:"Squad 4",color:"blue",points:0},{name:"Squad 5",color:"purple",points:0}];
 
-const allQuestions = [
-  {
-    id:'A1', stage:'A', topic:'Weight Conversion', type:'number', unit:'kg', tolerance:.1,
-    scenario:'Dispatch: 10-year-old with wheezing after soccer practice. Weight is 66 lb. The protocol sample in this question uses 0.15 mg/kg albuterol with a max of 5 mg.',
-    question:'Convert 66 lb to kilograms. Round to the nearest tenth.',
-    clue:'First step for most pediatric medication math: pounds ÷ 2.2.',
-    answer:30,
-    steps:'66 lb ÷ 2.2 = 30 kg. Always convert before using mg/kg dosing.',
-    hint:'Divide the pounds by 2.2. Do not multiply yet.',
-    review:'Pediatric airway med math often starts with weight conversion.'
-  },
-  {
-    id:'A2', stage:'A', topic:'Airway Dose', type:'number', unit:'mg', tolerance:.05,
-    scenario:'Same patient: 66 lb = 30 kg. The sample dosing rule is albuterol 0.15 mg/kg, max 5 mg.',
-    question:'What albuterol dose in mg would this patient receive using the sample rule?',
-    clue:'Dose = mg/kg × kg. Check the max dose after calculating.',
-    answer:4.5,
-    steps:'0.15 mg/kg × 30 kg = 4.5 mg. This is below the 5 mg max.',
-    hint:'Multiply 0.15 by 30.',
-    review:'Weight-based airway dosing: calculate, then check maximum dose.'
-  },
-  {
-    id:'A3', stage:'A', topic:'Nebulizer Volume', type:'number', unit:'mL', tolerance:.05,
-    scenario:'You have albuterol 2.5 mg in 3 mL unit-dose vials. The ordered dose in this sample problem is 5 mg.',
-    question:'How many mL of albuterol solution are needed?',
-    clue:'Each 3 mL vial contains 2.5 mg. For 5 mg, think how many vials.',
-    answer:6,
-    steps:'5 mg ÷ 2.5 mg per vial = 2 vials. 2 × 3 mL = 6 mL.',
-    hint:'5 mg is two 2.5 mg vials.',
-    review:'Nebulizer math often uses unit-dose vial logic.'
-  },
-  {
-    id:'A4', stage:'A', topic:'Nebulizer Volume', type:'number', unit:'mL', tolerance:.05,
-    scenario:'A sample DuoNeb setup uses albuterol 2.5 mg/3 mL plus ipratropium 0.5 mg/2.5 mL.',
-    question:'What is the total medication volume in the nebulizer cup before adding any extra saline?',
-    clue:'Add the two solution volumes, not the two medication doses.',
-    answer:5.5,
-    steps:'Albuterol volume 3 mL + ipratropium volume 2.5 mL = 5.5 mL total solution.',
-    hint:'The question asks for mL in the cup.',
-    review:'Keep doses and solution volumes separate in your head.'
-  },
-  {
-    id:'A5', stage:'A', topic:'Epinephrine IM', type:'number', unit:'mg', tolerance:.01,
-    scenario:'A 44 lb child has anaphylaxis. This sample prompt uses epinephrine IM 0.01 mg/kg of 1 mg/mL concentration, max 0.3 mg for the pediatric scenario.',
-    question:'What is the calculated epinephrine dose in mg?',
-    clue:'Convert lb to kg first, then multiply by 0.01 mg/kg.',
-    answer:.2,
-    steps:'44 lb ÷ 2.2 = 20 kg. 0.01 mg/kg × 20 kg = 0.2 mg.',
-    hint:'44 lb is 20 kg.',
-    review:'Anaphylaxis math is fast, but the physiology is faster: airway swelling, bronchospasm, and vascular collapse.'
-  },
-  {
-    id:'A6', stage:'A', topic:'Epinephrine Volume', type:'number', unit:'mL', tolerance:.01,
-    scenario:'A child needs 0.2 mg of epinephrine IM. The concentration provided is 1 mg/mL.',
-    question:'How many mL should be drawn up?',
-    clue:'mL = desired dose ÷ concentration.',
-    answer:.2,
-    steps:'0.2 mg ÷ 1 mg/mL = 0.2 mL.',
-    hint:'With 1 mg/mL, the mg and mL numbers match.',
-    review:'Concentration connects the dose to the actual volume in the syringe.'
-  },
-  {
-    id:'A7', stage:'A', topic:'Epinephrine Volume', type:'number', unit:'mL', tolerance:.01,
-    scenario:'An adult anaphylaxis sample order is epinephrine 0.3 mg IM. The concentration is 1 mg/mL.',
-    question:'How many mL is 0.3 mg at 1 mg/mL?',
-    clue:'mL = mg ÷ mg/mL.',
-    answer:.3,
-    steps:'0.3 mg ÷ 1 mg/mL = 0.3 mL.',
-    hint:'At 1 mg/mL, 0.3 mg equals 0.3 mL.',
-    review:'IM epinephrine is a rescue medication in true anaphylaxis. Do not let simple math slow recognition.'
-  },
-  {
-    id:'A8', stage:'A', topic:'Nebulizer Fill', type:'number', unit:'mL NS', tolerance:.05,
-    scenario:'You place one albuterol unit-dose vial containing 3 mL into a nebulizer cup. Your instructor asks you to bring the total cup volume to 5 mL for this practice station.',
-    question:'How many mL of normal saline should you add?',
-    clue:'Final volume desired − current volume = amount to add.',
-    answer:2,
-    steps:'5 mL desired total − 3 mL already in cup = 2 mL NS added.',
-    hint:'You already have 3 mL in the cup.',
-    review:'Nebulizer setup is medication math plus equipment thinking.'
-  },
+const stages=[
+{name:"PK vs PD Sort",short:"PK vs PD",type:"binary",huddle:10,answerTime:20,choices:[["PK","PHARMACOKINETICS"],["PD","PHARMACODYNAMICS"]],questions:[
+{text:"Drug is absorbed through mucosa",icon:"🧫",answer:"PK",topic:"Absorption",why:"Absorption is pharmacokinetics: what the body does to the drug."},
+{text:"Liver disease prolongs drug effect",icon:"🫀",answer:"PK",topic:"Metabolism",why:"Metabolism is pharmacokinetics. Liver impairment may slow drug breakdown."},
+{text:"Medication causes bronchodilation",icon:"🫁",answer:"PD",topic:"Physiologic effect",why:"Bronchodilation is the physiologic effect caused by the drug."},
+{text:"Drug stimulates a beta receptor",icon:"🧬",answer:"PD",topic:"Receptors",why:"Receptor activation is pharmacodynamics: what the drug does to the body."},
+{text:"Kidney failure increases accumulation risk",icon:"🫘",answer:"PK",topic:"Excretion",why:"Excretion is pharmacokinetics. Impaired kidneys can allow drug accumulation."},
+{text:"Medication blocks an ion channel",icon:"⚡",answer:"PD",topic:"Cellular targets",why:"Blocking an ion channel changes cellular function, so it is pharmacodynamics."}
+]},
+{name:"ADME Relay",short:"ADME",type:"multi",huddle:10,answerTime:20,choices:[["A","ABSORPTION"],["D","DISTRIBUTION"],["M","METABOLISM"],["E","EXCRETION"]],questions:[
+{text:"A shock patient receives an IM medication. Which step is most delayed first?",icon:"💉",answer:"A",topic:"Absorption",why:"Poor perfusion slows movement of medication from muscle into circulation."},
+{text:"The drug leaves the bloodstream and reaches target tissues. Which ADME step is this?",icon:"🩸",answer:"D",topic:"Distribution",why:"Distribution is drug movement through blood into tissues."},
+{text:"The liver chemically changes the medication. Which ADME step is this?",icon:"🧪",answer:"M",topic:"Metabolism",why:"Metabolism is chemical alteration, commonly by liver enzymes."},
+{text:"The kidneys remove the drug from the body. Which ADME step is this?",icon:"🫘",answer:"E",topic:"Excretion",why:"Excretion is removal of drug or metabolites from the body."},
+{text:"Severe edema changes how medication moves into tissue. Which ADME step is most involved?",icon:"💧",answer:"D",topic:"Distribution",why:"Tissue fluid and perfusion affect drug distribution."}
+]},
+{name:"Route Reality Challenge",short:"Routes",type:"multi",huddle:10,answerTime:20,choices:[["IV","IV/IO"],["IM","IM"],["NEB","NEBULIZED"],["SL","SUBLINGUAL"]],questions:[
+{text:"Fastest and most predictable route, but errors reach circulation immediately.",icon:"⚡",answer:"IV",topic:"Medication routes",why:"IV/IO access places medication directly into circulation."},
+{text:"Useful when IV access is unavailable, but onset may be slowed by poor perfusion.",icon:"💉",answer:"IM",topic:"Medication routes",why:"IM medications must be absorbed from muscle into blood."},
+{text:"Targets bronchial tissue and depends on ventilation and breathing technique.",icon:"🫁",answer:"NEB",topic:"Medication routes",why:"Nebulized medications are inhaled into the airway."},
+{text:"Absorbed through oral mucosa and avoids swallowing/GI breakdown.",icon:"👅",answer:"SL",topic:"Medication routes",why:"Sublingual medication is absorbed through mucous membranes."},
+{text:"A patient is vomiting and cannot swallow tablets. Which route listed avoids GI swallowing?",icon:"🤢",answer:"SL",topic:"Medication routes",why:"Sublingual avoids swallowing and GI transit when appropriate."}
+]},
+{name:"Receptor Switchboard",short:"Receptors",type:"multi",huddle:10,answerTime:20,choices:[["AGO","AGONIST"],["ANT","ANTAGONIST"],["SEL","SELECTIVE"],["TACH","TACHYPHYLAXIS"]],questions:[
+{text:"A medication activates a receptor to produce a response.",icon:"🔛",answer:"AGO",topic:"Receptors",why:"An agonist activates a receptor."},
+{text:"A medication blocks a receptor and prevents a response.",icon:"🛑",answer:"ANT",topic:"Receptors",why:"An antagonist blocks receptor activity."},
+{text:"A drug prefers one receptor type, but the effect is not always perfect.",icon:"🎯",answer:"SEL",topic:"Selectivity",why:"Selective drugs prefer a receptor target but may still have other effects."},
+{text:"Repeated exposure causes the medication effect to drop quickly.",icon:"📉",answer:"TACH",topic:"Tachyphylaxis",why:"Tachyphylaxis is a rapid decrease in response after repeated doses."},
+{text:"Naloxone reverses opioid effects by blocking opioid receptors. What concept is this?",icon:"🔒",answer:"ANT",topic:"Receptors",why:"Blocking receptor activation is antagonism."}
+]},
+{name:"Medication Error Trap",short:"Safety",type:"multi",huddle:10,answerTime:20,choices:[["SAFE","SAFE"],["UNSAFE","UNSAFE"],["REASSESS","REASSESS"],["DOSE","DOSE RISK"]],questions:[
+{text:"Student is unsure of the medication concentration before IV push.",icon:"⚠️",answer:"DOSE",topic:"Medication safety",why:"Unclear concentration creates a wrong-dose risk."},
+{text:"Patient improves after medication, but respiratory rate drops from 18 to 8.",icon:"😴",answer:"REASSESS",topic:"Adverse effects",why:"A new respiratory depression finding requires reassessment and intervention."},
+{text:"Medication was stored in extreme heat in the ambulance.",icon:"🌡️",answer:"UNSAFE",topic:"Medication storage",why:"Heat exposure can reduce medication safety/effectiveness."},
+{text:"Correct patient, correct drug, correct dose, correct route, and reassessment planned.",icon:"✅",answer:"SAFE",topic:"Medication safety",why:"This describes a safer medication-administration process."},
+{text:"The route says nebulized, but the patient is apneic without ventilation support.",icon:"🫁",answer:"UNSAFE",topic:"Medication route safety",why:"Nebulized delivery depends on ventilation or assisted delivery."}
+]},
+{name:"Final Boss: Build the Chain",short:"Final Chain",type:"chain",huddle:15,answerTime:45,choices:[],questions:[
+{text:"Build the medication reasoning chain for nebulized bronchodilation.",icon:"🏆",answer:["Nebulized route","Airway deposition","Bronchial target","Beta-2 receptor","Bronchodilation","Improved air movement"],topic:"Mechanism chain",why:"Route leads to delivery, delivery reaches target, receptor action changes physiology, reassessment confirms outcome.",tiles:["Improved air movement","Beta-2 receptor","Nebulized route","Bronchodilation","Bronchial target","Airway deposition"]},
+{text:"Build the PK chain for delayed IM medication in shock.",icon:"🏆",answer:["IM route","Poor perfusion","Delayed absorption","Reduced distribution","Delayed onset","Reassess frequently"],topic:"Mechanism chain",why:"Poor perfusion delays absorption and distribution, so onset may be delayed.",tiles:["Delayed onset","IM route","Reassess frequently","Delayed absorption","Poor perfusion","Reduced distribution"]}
+]}];
 
-  {
-    id:'D1', stage:'D', topic:'Fluid Bolus', type:'number', unit:'mL', tolerance:1,
-    scenario:'A 55 lb pediatric patient is hypotensive after vomiting and poor intake. This sample order is isotonic crystalloid 20 mL/kg.',
-    question:'How many mL should be given for one bolus?',
-    clue:'Convert weight first, then multiply by mL/kg.',
-    answer:500,
-    steps:'55 lb ÷ 2.2 = 25 kg. 20 mL/kg × 25 kg = 500 mL.',
-    hint:'55 lb is 25 kg.',
-    review:'Fluid bolus math = mL/kg × kg. Then reassess perfusion and lungs.'
-  },
-  {
-    id:'D2', stage:'D', topic:'Fluid Bolus', type:'number', unit:'mL', tolerance:1,
-    scenario:'An adult patient weighs 176 lb. Your sample order is a cautious isotonic crystalloid bolus of 10 mL/kg because the patient has possible fluid overload risk.',
-    question:'How many mL is the bolus?',
-    clue:'176 lb to kg, then multiply by 10 mL/kg.',
-    answer:800,
-    steps:'176 lb ÷ 2.2 = 80 kg. 10 mL/kg × 80 kg = 800 mL.',
-    hint:'176 lb is 80 kg.',
-    review:'The math gives the amount; the patient tells you whether more is safe.'
-  },
-  {
-    id:'D3', stage:'D', topic:'Fluid Remaining', type:'number', unit:'mL', tolerance:1,
-    scenario:'You spike a 1 L bag of normal saline. After initial resuscitation, 300 mL has infused.',
-    question:'How many mL remain in the bag?',
-    clue:'1 L = 1000 mL.',
-    answer:700,
-    steps:'1 L = 1000 mL. 1000 mL − 300 mL = 700 mL remaining.',
-    hint:'Convert liters to milliliters first.',
-    review:'Bag math matters during long transports and repeated boluses.'
-  },
-  {
-    id:'D4', stage:'D', topic:'Repeat Bolus', type:'number', unit:'mL total', tolerance:1,
-    scenario:'A 33 lb child receives two sample boluses of isotonic crystalloid at 20 mL/kg each.',
-    question:'What is the total volume after two boluses?',
-    clue:'Calculate one bolus, then multiply by two.',
-    answer:600,
-    steps:'33 lb ÷ 2.2 = 15 kg. One bolus: 20 mL/kg × 15 kg = 300 mL. Two boluses: 300 × 2 = 600 mL.',
-    hint:'33 lb is 15 kg.',
-    review:'Repeated boluses require repeated reassessment. Do not let the calculator outrun the patient.'
-  },
-  {
-    id:'D5', stage:'D', topic:'Drip Rate', type:'number', unit:'gtt/min', tolerance:1,
-    scenario:'You need to infuse 500 mL over 20 minutes using a 10 gtt/mL macrodrip set.',
-    question:'What drip rate in gtt/min is needed?',
-    clue:'gtt/min = (mL × drop factor) ÷ minutes.',
-    answer:250,
-    steps:'(500 mL × 10 gtt/mL) ÷ 20 min = 5000 ÷ 20 = 250 gtt/min.',
-    hint:'Multiply 500 by 10, then divide by 20.',
-    review:'Manual drip rates can become unrealistic fast. Recognize when pressure bag/pump/transport priorities matter.'
-  },
-  {
-    id:'D6', stage:'D', topic:'Drip Rate', type:'number', unit:'gtt/min', tolerance:1,
-    scenario:'A 250 mL bolus is ordered over 15 minutes. The drip set is 15 gtt/mL.',
-    question:'Calculate the drip rate in gtt/min.',
-    clue:'gtt/min = (250 × 15) ÷ 15.',
-    answer:250,
-    steps:'(250 mL × 15 gtt/mL) ÷ 15 min = 3750 ÷ 15 = 250 gtt/min.',
-    hint:'The 15 drop factor and 15 minutes cancel out.',
-    review:'Drip math is simple, but high rates are hard to count manually.'
-  },
-  {
-    id:'D7', stage:'D', topic:'Crystalloid Reasoning', type:'choice',
-    scenario:'A trauma patient has suspected internal bleeding. You can give isotonic crystalloid, but you remember crystalloids do not carry oxygen.',
-    question:'Which statement best matches fluid resuscitation reasoning?',
-    clue:'Think perfusion, oxygen-carrying capacity, hemostasis, and transport.',
-    choices:[
-      'Give enough crystalloid to support perfusion, reassess, and prioritize definitive care.',
-      'Use crystalloids to fully restore the patient to their normal blood pressure every time.',
-      'Crystalloids carry oxygen, so blood products are rarely needed.',
-      'If the bag is hanging, reassessment is optional until arrival.'
-    ],
-    answer:0,
-    steps:'Correct: isotonic crystalloids can support volume/perfusion, but they do not carry oxygen. Over-resuscitation can dilute clotting factors and worsen bleeding risk. Reassess and follow protocol/transport priorities.',
-    hint:'Fluid is not blood. Perfusion support is not the same as fixing hemorrhage.',
-    review:'Crystalloid resuscitation is physiology, not just volume replacement.'
-  },
-  {
-    id:'D8', stage:'D', topic:'Fluid Safety', type:'choice',
-    scenario:'A patient with shortness of breath and a history of heart failure is hypotensive. A fluid bolus is being considered.',
-    question:'Which reassessment finding is most important to monitor for fluid overload?',
-    clue:'Think lungs and work of breathing.',
-    choices:['Improving handwriting','New/worsening crackles and increased work of breathing','Pupil color','Whether the IV bag label is facing forward'],
-    answer:1,
-    steps:'Correct: worsening lung sounds, crackles, rising work of breathing, falling oxygenation, and respiratory fatigue can suggest fluid overload or pulmonary edema risk.',
-    hint:'The lungs often complain when the vascular tank is overfilled.',
-    review:'Fluids can help perfusion but hurt breathing in the wrong patient.'
-  },
-
-  {
-    id:'M1', stage:'M', topic:'Concentration', type:'number', unit:'mg/mL', tolerance:.05,
-    scenario:'A magnesium sulfate vial contains 2 g in 4 mL. Convert the concentration to mg/mL.',
-    question:'What is the concentration in mg/mL?',
-    clue:'2 g = 2000 mg. Then divide by 4 mL.',
-    answer:500,
-    steps:'2 g = 2000 mg. 2000 mg ÷ 4 mL = 500 mg/mL.',
-    hint:'Convert grams to milligrams before dividing.',
-    review:'Unit conversion errors are one of the fastest ways to make medication math unsafe.'
-  },
-  {
-    id:'M2', stage:'M', topic:'Drip Rate', type:'number', unit:'gtt/min', tolerance:1,
-    scenario:'Magnesium sulfate 2 g is mixed in 100 mL and ordered over 20 minutes. The drip set is 15 gtt/mL.',
-    question:'What is the drip rate in gtt/min?',
-    clue:'gtt/min = (mL × drop factor) ÷ minutes.',
-    answer:75,
-    steps:'(100 mL × 15 gtt/mL) ÷ 20 min = 1500 ÷ 20 = 75 gtt/min.',
-    hint:'100 × 15 = 1500 drops total.',
-    review:'Magnesium can help severe bronchospasm but requires BP and respiratory reassessment.'
-  },
-  {
-    id:'M3', stage:'M', topic:'Steroid Volume', type:'number', unit:'mL', tolerance:.05,
-    scenario:'A sample order is dexamethasone 8 mg. The vial concentration is 10 mg/mL.',
-    question:'How many mL should be drawn up?',
-    clue:'mL = desired dose ÷ concentration.',
-    answer:.8,
-    steps:'8 mg ÷ 10 mg/mL = 0.8 mL.',
-    hint:'Divide 8 by 10.',
-    review:'Steroids are not instant bronchodilators. They help inflammation later.'
-  },
-  {
-    id:'M4', stage:'M', topic:'Steroid Concentration', type:'number', unit:'mg/mL', tolerance:.1,
-    scenario:'A methylprednisolone vial is reconstituted to contain 125 mg in 2 mL.',
-    question:'What is the concentration in mg/mL?',
-    clue:'Concentration = total mg ÷ total mL.',
-    answer:62.5,
-    steps:'125 mg ÷ 2 mL = 62.5 mg/mL.',
-    hint:'Half of 125 is 62.5.',
-    review:'Know what is in each mL before drawing from a vial.'
-  },
-  {
-    id:'M5', stage:'M', topic:'Infusion Total', type:'number', unit:'mcg', tolerance:1,
-    scenario:'A sample epinephrine infusion is running at 10 mcg/min. It runs for 20 minutes during transport.',
-    question:'How many total mcg were delivered over 20 minutes?',
-    clue:'Total = rate × time.',
-    answer:200,
-    steps:'10 mcg/min × 20 min = 200 mcg total.',
-    hint:'Do not convert units unless asked. Rate times time.',
-    review:'Infusion math is rate × time, then reassess patient response.'
-  },
-  {
-    id:'M6', stage:'M', topic:'Infusion Conversion', type:'number', unit:'mg', tolerance:.01,
-    scenario:'You calculated that 200 mcg of epinephrine was delivered over a period of time.',
-    question:'Convert 200 mcg to mg.',
-    clue:'1 mg = 1000 mcg.',
-    answer:.2,
-    steps:'200 mcg ÷ 1000 = 0.2 mg.',
-    hint:'Move from mcg to mg by dividing by 1000.',
-    review:'mcg-to-mg conversions are tiny numbers with big consequences.'
-  },
-  {
-    id:'M7', stage:'M', topic:'Continuous Neb Math', type:'number', unit:'unit doses', tolerance:.01,
-    scenario:'A training station uses a continuous albuterol target of 10 mg/hour. You have unit-dose albuterol vials of 2.5 mg each.',
-    question:'How many 2.5 mg unit doses are needed for 1 hour?',
-    clue:'Number of doses = total mg needed ÷ mg per unit dose.',
-    answer:4,
-    steps:'10 mg/hour ÷ 2.5 mg per unit dose = 4 unit doses.',
-    hint:'How many 2.5s fit into 10?',
-    review:'Continuous nebulization requires both dose math and patient reassessment.'
-  },
-  {
-    id:'M8', stage:'M', topic:'Drop Rate', type:'number', unit:'gtt/min', tolerance:1,
-    scenario:'A pump is unavailable. You need to infuse 100 mL over 10 minutes using a 60 gtt/mL microdrip set.',
-    question:'What is the drip rate in gtt/min?',
-    clue:'gtt/min = (100 × 60) ÷ 10.',
-    answer:600,
-    steps:'(100 mL × 60 gtt/mL) ÷ 10 min = 6000 ÷ 10 = 600 gtt/min.',
-    hint:'Microdrip sets can create huge drop rates for rapid infusions.',
-    review:'When the rate is impractical, recognize the equipment problem rather than pretending you can count lightning.'
-  },
-
-  {
-    id:'E1', stage:'E', topic:'Reassessment', type:'choice',
-    scenario:'After albuterol, the patient says they feel slightly better. HR increased from 108 to 126. Wheezing is still present, but EtCO₂ improved from a shark-fin waveform to a more rectangular shape.',
-    question:'What is the best interpretation?',
-    clue:'Side effects and improvement can happen together.',
-    choices:[
-      'Tachycardia automatically means the medication failed.',
-      'A faster pulse can occur with beta stimulation; reassess the whole patient and ventilation trend.',
-      'EtCO₂ waveform shape is not useful after treatment.',
-      'If wheezing remains, no treatment worked at all.'
-    ],
-    answer:1,
-    steps:'Correct: beta agonists can cause tachycardia/tremor. The clinician should reassess lung sounds, work of breathing, SpO₂, EtCO₂, pulse, BP, and overall trend.',
-    hint:'Do not judge a bronchodilator by heart rate alone.',
-    review:'Side effects make sense when you connect them to receptor physiology.'
-  },
-  {
-    id:'E2', stage:'E', topic:'Silent Chest', type:'choice',
-    scenario:'A severe asthma patient initially had loud wheezing. After several minutes, wheezing becomes very quiet, mental status worsens, and EtCO₂ rises with a poor waveform.',
-    question:'What should this make you worry about?',
-    clue:'Quiet lungs are not always happy lungs.',
-    choices:['Complete recovery','Ventilatory failure/fatigue with poor air movement','A normal medication side effect only','That oxygen is no longer needed'],
-    answer:1,
-    steps:'Correct: a silent or quiet chest in a tiring patient can mean air movement is disappearing. Medication may not fix fatigue; ventilation/airway support may be needed.',
-    hint:'Wheezing requires air movement. No air movement can sound quiet.',
-    review:'Treat the patient, waveform, work of breathing, and trend.'
-  },
-  {
-    id:'E3', stage:'E', topic:'Anaphylaxis Reasoning', type:'choice',
-    scenario:'A patient has hives, facial swelling, wheezing, hypotension, and vomiting after a bee sting.',
-    question:'Which medication logic best fits the life threat?',
-    clue:'Think airway edema, bronchospasm, vasodilation, and shock.',
-    choices:[
-      'Diphenhydramine only, because hives are visible.',
-      'Epinephrine because it supports vascular tone and bronchodilation in anaphylaxis.',
-      'Steroid only, because inflammation is present.',
-      'No medication until all skin findings disappear.'
-    ],
-    answer:1,
-    steps:'Correct: in anaphylaxis, epinephrine addresses multiple life threats: airway swelling, bronchospasm, vasodilation, and shock risk. Adjuncts do not replace epinephrine for true anaphylaxis.',
-    hint:'The life threat is bigger than the rash.',
-    review:'Do not let the visible skin problem distract from airway, breathing, and circulation failure.'
-  },
-  {
-    id:'E4', stage:'E', topic:'Route Reasoning', type:'choice',
-    scenario:'A patient needs a nebulized medication. The medication works locally in the airway, and the patient can still move some air.',
-    question:'Why is the nebulized route useful here?',
-    clue:'Think delivery site.',
-    choices:[
-      'It delivers medication toward the airway where bronchospasm is occurring.',
-      'It bypasses all side effects every time.',
-      'It works only if swallowed.',
-      'It replaces ventilation in a fatigued patient.'
-    ],
-    answer:0,
-    steps:'Correct: nebulized medications target the airway. They can still have systemic effects, and they do not replace ventilation if the patient is failing.',
-    hint:'Local delivery does not mean zero systemic effects.',
-    review:'Route matters because it changes delivery speed, target site, and safety concerns.'
-  }
-];
-
-const $ = id => document.getElementById(id);
-const letters = ['A','B','C','D'];
-const defaultSquads = ['Squad Alpha','Squad Bravo','Squad Charlie','Squad Delta','Squad Echo','Squad Foxtrot'];
-const teamIcons = ['🫁','💧','⚡','🧪','🚑','🩺'];
-let audioCtx = null;
-let state = {
-  soundOn:true, mode:'touch', active:false, player:'EMSP 2306',
-  roundQuestions:[], currentIndex:0, revealed:false,
-  startedAt:0, timer:null, qTimer:null, questionStart:0, timeLimit:40, timeLeft:40,
-  classScore:0, classCorrect:0, classTotal:0,
-  squadCycleStart:0, selectedSquads:[0,1,2,3],
-  teams:[], teamAnswers:{}, answers:[]
-};
-
-function unlockAudio(){ if(!audioCtx){ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if(audioCtx.state==='suspended') audioCtx.resume(); }
-function tone(freq=440,duration=.12,type='sine',gain=.05,delay=0){
-  if(!state.soundOn) return; unlockAudio();
-  const t=audioCtx.currentTime+delay; const osc=audioCtx.createOscillator(); const g=audioCtx.createGain();
-  osc.type=type; osc.frequency.setValueAtTime(freq,t); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(gain,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+duration);
-  osc.connect(g); g.connect(audioCtx.destination); osc.start(t); osc.stop(t+duration+.02);
-}
-function sfx(kind){
-  if(!state.soundOn) return;
-  if(kind==='click') tone(520,.06,'square',.035);
-  if(kind==='lock'){ tone(460,.06,'triangle',.045); tone(760,.08,'triangle',.035,.055); }
-  if(kind==='correct'){ tone(523,.08,'sine',.055); tone(659,.08,'sine',.055,.08); tone(784,.12,'sine',.055,.16); }
-  if(kind==='wrong'){ tone(180,.16,'sawtooth',.045); tone(130,.20,'sawtooth',.035,.12); }
-  if(kind==='stage'){ tone(392,.08,'triangle',.045); tone(523,.10,'triangle',.045,.08); tone(659,.12,'triangle',.045,.18); }
-  if(kind==='tick') tone(880,.045,'square',.025);
-  if(kind==='done'){ tone(523,.09,'sine',.05); tone(659,.09,'sine',.05,.09); tone(784,.09,'sine',.05,.18); tone(1046,.20,'sine',.05,.30); }
-}
-function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
-
-function maxActiveSquads(){ return state.mode==='solo' ? 1 : (parseInt($('teamCount')?.value||'4',10) || 4); }
-function getSelectedSquadIndexes(){
-  const max=maxActiveSquads();
-  const chosen=(state.selectedSquads && state.selectedSquads.length?state.selectedSquads:[0,1,2,3]).slice(0,max);
-  return state.mode==='solo' ? [0] : chosen;
-}
-function renderSquadPicker(){
-  const box=$('squadPicker'); if(!box) return;
-  state.mode=$('modeSelect')?.value || state.mode;
-  const max=maxActiveSquads();
-  if(state.mode==='solo') state.selectedSquads=[0];
-  else state.selectedSquads=(state.selectedSquads && state.selectedSquads.length?state.selectedSquads:[0,1,2,3]).slice(0,max);
-  box.innerHTML=defaultSquads.map((name,i)=>{
-    const active=state.selectedSquads.includes(i);
-    return `<button type="button" class="squadToggle ${active?'active':''}" data-index="${i}" aria-pressed="${active}"><span class="emoji">${teamIcons[i]}</span><span><span class="name">${name}</span><span class="status">${active?'Going up':'Tap to rotate in'}</span></span></button>`;
-  }).join('');
-  box.querySelectorAll('.squadToggle').forEach(btn=>btn.addEventListener('pointerdown',()=>toggleSquad(Number(btn.dataset.index))));
-  const chosen=getSelectedSquadIndexes().map(i=>defaultSquads[i].replace('Squad ','')).join(', ');
-  $('activeSquadHint').textContent = state.mode==='solo' ? 'Solo mode uses Squad Alpha only.' : `Pick up to ${max} squads for this round. Active: ${chosen || 'none selected'}.`;
-}
-function toggleSquad(index){
-  if(state.mode==='solo'){ toast('Solo mode uses Squad Alpha only.'); return; }
-  const max=maxActiveSquads();
-  let selected=state.selectedSquads.slice();
-  if(selected.includes(index)){
-    if(selected.length===1){ toast('Keep at least one squad active.'); return; }
-    selected=selected.filter(i=>i!==index);
-  } else {
-    if(selected.length>=max) selected.shift();
-    selected.push(index);
-  }
-  state.selectedSquads=selected;
-  sfx('click');
-  renderSquadPicker();
-}
-function autoPickNextSquads(){
-  const max=maxActiveSquads();
-  const start=state.squadCycleStart || 0;
-  state.selectedSquads=Array.from({length:max},(_,k)=>(start+k)%defaultSquads.length);
-  state.squadCycleStart=(start+max)%defaultSquads.length;
-  sfx('stage');
-  renderSquadPicker();
-}
-function resetSquads(){ state.selectedSquads=[0,1,2,3].slice(0,maxActiveSquads()); state.squadCycleStart=0; sfx('click'); renderSquadPicker(); }
-function fmtTime(sec){ sec=Math.max(0,Math.floor(sec)); return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`; }
-function cleanNumber(n){ if(Math.abs(n-Math.round(n))<.001) return String(Math.round(n)); return String(Math.round(n*100)/100); }
-function correctLabel(q){ return q.type==='number' ? `${cleanNumber(q.answer)} ${q.unit||''}`.trim() : q.choices[q.answer]; }
-function makeOptionLabel(value, q){ return `${cleanNumber(value)} ${q.unit||''}`.trim(); }
-function shuffle(arr){ return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]); }
-function buildOptions(q){
-  if(q.type==='choice') return q.choices.map((text,i)=>({text, correct:i===q.answer, raw:i}));
-  const a=Number(q.answer); const vals=[a];
-  const candidates=[];
-  if((q.unit||'').toLowerCase().includes('kg')) candidates.push(a*2.2, a/2, a+10, Math.max(.1,a-10));
-  else if((q.unit||'').toLowerCase().includes('gtt')) candidates.push(a/2, a*2, a+10, Math.max(1,a-10), a*60);
-  else if((q.unit||'').toLowerCase().includes('ml')) candidates.push(a*2, a/2, a+1, Math.max(.1,a-1), a*10);
-  else candidates.push(a*2, a/2, a+0.5, Math.max(.01,a-0.5), a*10);
-  for(const c of candidates){
-    const rounded = Math.abs(c)>=20 ? Math.round(c) : Math.round(c*100)/100;
-    if(Number.isFinite(rounded) && rounded>0 && !vals.some(v=>Math.abs(v-rounded)<.02)) vals.push(rounded);
-    if(vals.length>=4) break;
-  }
-  let bump=1;
-  while(vals.length<4){ const v=Math.round((a+bump*(a<2?.25:2))*100)/100; if(!vals.some(x=>Math.abs(x-v)<.02)) vals.push(v); bump++; }
-  return shuffle(vals.slice(0,4).map(v=>({text:makeOptionLabel(v,q), correct:Math.abs(v-a)<.02, raw:v})));
-}
-function getRoundQuestions(count){
-  const groups={A:[],D:[],M:[],E:[]}; allQuestions.forEach(q=>groups[q.stage]?.push(q)); Object.values(groups).forEach(g=>shuffle(g));
-  const order=[]; const keys=['A','D','M','E']; let i=0;
-  while(order.length<count){ const key=keys[i%keys.length]; const g=groups[key]; if(g.length) order.push(g.shift()); i++; if(i>200) break; }
-  return order.slice(0,count);
-}
-function startGame(){
-  unlockAudio(); sfx('stage');
-  state.mode=$('modeSelect').value; state.player=$('playerName').value.trim() || 'EMSP 2306';
-  const n=parseInt($('questionCount').value,10);
-  renderSquadPicker();
-  const selectedIndexes=getSelectedSquadIndexes();
-  state.teams = selectedIndexes.map((squadIndex,i)=>({id:`T${i+1}`, squadIndex, name:defaultSquads[squadIndex], icon:teamIcons[squadIndex], score:0, correct:0, total:0, streak:0}));
-  state.roundQuestions=getRoundQuestions(n); state.currentIndex=0; state.revealed=false; state.answers=[]; state.teamAnswers={};
-  state.classScore=0; state.classCorrect=0; state.classTotal=0; state.startedAt=Date.now(); state.active=true;
-  $('setup').classList.add('hidden'); $('gameArea').classList.add('show'); $('dashboard').classList.remove('show'); $('bankPreview').classList.remove('show'); $('gameCard').classList.remove('hidden');
-  clearInterval(state.timer); state.timer=setInterval(()=>{$('timeNum').textContent=fmtTime((Date.now()-state.startedAt)/1000)},1000);
-  renderAll(); renderQuestion();
-}
-function renderAll(){ renderTeamBoard(); renderStages(); updateStats(); }
-function renderTeamBoard(target='teamBoard'){
-  const board=$(target); board.innerHTML='';
-  state.teams.forEach((t,i)=>{
-    const div=document.createElement('div'); div.className=`teamScore t${i+1}`;
-    const acc=t.total?Math.round(t.correct/t.total*100):0;
-    div.innerHTML=`<div class="row"><strong>${t.icon} ${t.name}</strong><span class="pill">${t.score}</span></div><div class="small">${t.correct}/${t.total} correct • ${acc}% • streak ${t.streak}</div>`;
-    board.appendChild(div);
-  });
-}
-function renderStages(){
-  const map=$('stageMap'); map.innerHTML=''; const cur=state.roundQuestions[state.currentIndex]; const done=new Set(state.answers.map(a=>a.stage));
-  stages.forEach(s=>{ const div=document.createElement('div'); div.className='stage '+(cur&&cur.stage===s.key?'active ':'')+(done.has(s.key)?'done':''); div.innerHTML=`<div class="letter">${s.key}</div><div><div class="name">${s.name}</div><div class="desc">${s.desc}</div></div>`; map.appendChild(div); });
-}
-function updateStats(){
-  const acc=state.classTotal?Math.round(state.classCorrect/state.classTotal*100):0;
-  $('classScore').textContent=state.classScore; $('accuracyNum').textContent=acc+'%';
-  const locked=Object.keys(state.teamAnswers).length; $('lockedNum').textContent=`${locked}/${state.teams.length}`;
-  $('qCounter').textContent=`${Math.min(state.currentIndex+1,state.roundQuestions.length)}/${state.roundQuestions.length}`;
-  $('progressFill').style.width=`${state.roundQuestions.length?state.currentIndex/state.roundQuestions.length*100:0}%`;
-  renderTeamBoard();
-}
-function startQuestionTimer(){
-  clearInterval(state.qTimer); state.questionStart=Date.now(); state.timeLimit = state.mode==='challenge'?30:45; state.timeLeft=state.timeLimit; $('timerFill').style.width='100%';
-  state.qTimer=setInterval(()=>{
-    if(state.revealed) return;
-    state.timeLeft = Math.max(0, state.timeLimit - Math.floor((Date.now()-state.questionStart)/1000));
-    $('timerFill').style.width = `${state.timeLeft/state.timeLimit*100}%`;
-    if(state.timeLeft<=5 && state.timeLeft>0) sfx('tick');
-    if(state.timeLeft===0){ clearInterval(state.qTimer); revealAnswers(true); }
-  },1000);
-}
-function renderQuestion(){
-  const q=state.roundQuestions[state.currentIndex]; if(!q){ finishGame(); return; }
-  state.revealed=false; state.teamAnswers={}; q._options=buildOptions(q); q._correctIndex=q._options.findIndex(o=>o.correct);
-  const st=stages.find(s=>s.key===q.stage);
-  $('stagePill').textContent=`${q.stage} • ${st?st.name:'Stage'}`; $('stagePillMini').textContent=q.stage; $('topicPill').textContent=q.topic;
-  $('scenarioText').textContent=q.scenario; $('questionText').textContent=q.question; $('clueBox').textContent='Clue: '+q.clue;
-  $('feedbackBox').className='feedback'; $('feedbackBox').innerHTML=''; $('nextBtn').classList.add('hidden'); $('revealBtn').disabled=false; $('hintBtn').disabled=false;
-  if(state.mode==='touch') renderTouchAnswer(q); else renderSoloAnswer(q);
-  renderStages(); updateStats(); startQuestionTimer(); window.scrollTo({top:document.querySelector('.main').offsetTop-10,behavior:'smooth'});
-}
-function renderSoloAnswer(q){
-  const area=$('answerArea'); area.className=''; area.innerHTML='<div class="optionGrid" id="optionGrid"></div>';
-  const grid=$('optionGrid');
-  q._options.forEach((o,i)=>{ const b=document.createElement('div'); b.className='option-tile'; b.dataset.index=i; b.innerHTML=`<div class="letter">${letters[i]}</div><div class="txt">${o.text}</div>`; b.addEventListener('pointerdown',()=>selectSolo(i)); grid.appendChild(b); });
-}
-function selectSolo(i){ if(state.revealed) return; state.teamAnswers.T1=i; document.querySelectorAll('.option-tile').forEach(x=>x.classList.remove('selected')); document.querySelector(`.option-tile[data-index="${i}"]`)?.classList.add('selected'); sfx('lock'); updateStats(); }
-function renderTouchAnswer(q){
-  const area=$('answerArea'); area.className='touchArena';
-  area.innerHTML = `<div class="optionGrid">${q._options.map((o,i)=>`<div class="option-tile" data-master="${i}"><div class="letter">${letters[i]}</div><div class="txt">${o.text}</div></div>`).join('')}</div><div class="callout">Each squad taps A, B, C, or D on their own pad. Answers lock in immediately. Big touch targets are intentional for the board.</div><div class="teamPads" id="teamPads"></div>`;
-  const pads=$('teamPads'); pads.innerHTML='';
-  state.teams.forEach((t,teamIndex)=>{
-    const pad=document.createElement('div'); pad.className='teamPad'; pad.id=`pad-${t.id}`;
-    pad.innerHTML=`<div class="teamPadHeader"><strong>${t.icon} ${t.name}</strong><span class="lockBadge" id="lock-${t.id}">Waiting</span></div><div class="teamOptions">${letters.map((L,i)=>`<div class="team-option" data-team="${t.id}" data-index="${i}">${L}</div>`).join('')}</div>`;
-    pads.appendChild(pad);
-  });
-  document.querySelectorAll('.team-option').forEach(el=>el.addEventListener('pointerdown',()=>selectTeam(el.dataset.team, Number(el.dataset.index))));
-}
-function selectTeam(teamId,index){
-  if(state.revealed || state.teamAnswers[teamId]!==undefined) return;
-  state.teamAnswers[teamId]=index; sfx('lock');
-  document.querySelectorAll(`.team-option[data-team="${teamId}"]`).forEach(x=>x.classList.toggle('selected', Number(x.dataset.index)===index));
-  $(`pad-${teamId}`)?.classList.add('locked'); $(`lock-${teamId}`).textContent='Locked'; updateStats();
-  if(Object.keys(state.teamAnswers).length===state.teams.length) setTimeout(()=>revealAnswers(false),350);
-}
-function revealAnswers(timeout=false){
-  if(state.revealed) return; const q=state.roundQuestions[state.currentIndex];
-  if(!timeout && Object.keys(state.teamAnswers).length===0){ toast('No answers locked yet.'); return; }
-  state.revealed=true; clearInterval(state.qTimer); $('timerFill').style.width='0%';
-  const correctIndex=q._correctIndex; let anyCorrect=false; let anyWrong=false;
-  // Mark master options
-  document.querySelectorAll('.option-tile').forEach(el=>{ const i=Number(el.dataset.index ?? el.dataset.master); if(i===correctIndex) el.classList.add('correct'); else if(state.mode==='solo' && state.teamAnswers.T1===i) el.classList.add('wrong'); });
-  state.teams.forEach(t=>{
-    const ans=state.teamAnswers[t.id]; const didAnswer=ans!==undefined; const ok=didAnswer && ans===correctIndex;
-    t.total++; if(ok){t.correct++; t.streak++; t.score += 100 + Math.min(5,t.streak)*10 + Math.max(0,state.timeLeft); state.classScore += 100; state.classCorrect++; anyCorrect=true;} else {t.streak=0; anyWrong=true;}
-    state.classTotal++;
-    if(state.mode==='touch') document.querySelectorAll(`.team-option[data-team="${t.id}"]`).forEach(el=>{ const i=Number(el.dataset.index); if(i===correctIndex) el.classList.add('correct'); else if(didAnswer && i===ans) el.classList.add('wrong'); });
-    state.answers.push({round:state.currentIndex+1, team:t.name, team_id:t.id, id:q.id, stage:q.stage, topic:q.topic, correct:ok, timed_out:timeout&&!didAnswer, userAnswer:didAnswer?`${letters[ans]}. ${q._options[ans].text}`:'No answer', correctAnswer:`${letters[correctIndex]}. ${q._options[correctIndex].text}`, question:q.question, scenario:q.scenario, steps:q.steps, review:q.review});
-  });
-  if(anyCorrect && !anyWrong) sfx('correct'); else if(anyCorrect) {sfx('correct'); setTimeout(()=>sfx('wrong'),250);} else sfx('wrong');
-  const fb=$('feedbackBox'); const allCorrect=state.teams.every(t=>state.answers.filter(a=>a.round===state.currentIndex+1 && a.team_id===t.id).slice(-1)[0]?.correct);
-  fb.className='feedback show '+(allCorrect?'correct':anyCorrect?'neutral':'wrong');
-  fb.innerHTML=`<h3>${timeout?'⏱️ Time is up.':allCorrect?'✅ All squads nailed it.':anyCorrect?'🧠 Some squads got it. Let’s clean up the misses.':'❌ Nobody got it yet — perfect review moment.'}</h3><div><strong>Correct answer:</strong> ${letters[correctIndex]}. ${q._options[correctIndex].text}</div><div class="steps"><strong>Show the work:</strong> ${q.steps}</div><div class="mini" style="margin-top:8px"><strong>Review point:</strong> ${q.review}</div>`;
-  $('revealBtn').disabled=true; $('hintBtn').disabled=true; $('nextBtn').classList.remove('hidden'); updateStats();
-}
-function nextQuestion(){ state.currentIndex++; if(state.currentIndex>=state.roundQuestions.length) finishGame(); else {sfx('click'); renderQuestion();} }
-function showHint(){ const q=state.roundQuestions[state.currentIndex]; toast(q.hint || 'Read the unit. The unit is half the fight.'); sfx('click'); }
-function skipQuestion(){ revealAnswers(true); }
-function finishGame(){
-  clearInterval(state.timer); clearInterval(state.qTimer); state.active=false; sfx('done');
-  $('gameCard').classList.add('hidden'); $('dashboard').classList.add('show'); $('progressFill').style.width='100%';
-  const elapsed=Math.floor((Date.now()-state.startedAt)/1000); const acc=state.classTotal?Math.round(state.classCorrect/state.classTotal*100):0;
-  $('finalName').textContent=state.player; $('finalScore').textContent=state.classScore; $('finalAccuracy').textContent=acc+'%'; $('finalTime').textContent=fmtTime(elapsed);
-  let grade='Developing'; if(acc>=90) grade='Field Ready'; else if(acc>=75) grade='Almost There'; else if(acc>=60) grade='Needs Reps'; $('finalGrade').textContent=grade;
-  $('debriefMessage').innerHTML=buildDebrief(acc); renderTeamBoard('finalTeams'); renderTopicGrid(); renderReviewTable(); toast('Round complete. Debrief unlocked.');
-}
-function buildDebrief(acc){ if(acc>=90) return '<strong>Excellent work.</strong> The class is calculating with control. Keep explaining the physiology behind the numbers.'; if(acc>=75) return '<strong>Good round.</strong> The structure is there. Review the missed topics below and replay with a shorter timer.'; if(acc>=60) return '<strong>You are building it.</strong> Slow down, write the units, and check kg conversion before medication math.'; return '<strong>Reset, not defeat.</strong> This is why we practice in a game. Start with kg conversion, desired-over-have, and bolus math before timed mode.'; }
-function topicStats(){ const map={}; state.answers.forEach(a=>{ if(!map[a.topic]) map[a.topic]={topic:a.topic,total:0,correct:0,misses:[]}; map[a.topic].total++; if(a.correct) map[a.topic].correct++; else map[a.topic].misses.push(`${a.team}: ${a.id}`); }); return Object.values(map).sort((a,b)=>a.topic.localeCompare(b.topic)); }
-function renderTopicGrid(){ const grid=$('topicGrid'); grid.innerHTML=''; topicStats().forEach(t=>{ const pct=Math.round(t.correct/t.total*100); const div=document.createElement('div'); div.className='topic'; div.innerHTML=`<strong>${t.topic}</strong><div>${t.correct}/${t.total} correct • ${pct}%</div><div class="mini">${pct<80?'Review recommended':'Solid performance'}</div><div class="bar"><span style="width:${pct}%"></span></div>`; grid.appendChild(div); }); }
-function renderReviewTable(){ const table=$('reviewTable'); table.innerHTML='<thead><tr><th>Round</th><th>Squad</th><th>Stage</th><th>Topic</th><th>Result</th><th>Answer</th><th>Correct / Rationale</th></tr></thead><tbody></tbody>'; const tb=table.querySelector('tbody'); state.answers.forEach(a=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${a.round}</td><td>${a.team}</td><td>${a.stage}</td><td>${a.topic}</td><td>${a.correct?'✅ Correct':'❌ Missed'}</td><td>${a.userAnswer}</td><td><strong>${a.correctAnswer}</strong><br><span class="mini">${a.steps}</span></td>`; tb.appendChild(tr); }); }
-function metricsObject(){ const elapsed=state.startedAt?Math.floor((Date.now()-state.startedAt)/1000):0; return {game:'ADME Airway & Fluid Math Arena - Classic Squad Touch', class_name:state.player, mode:state.mode, date:new Date().toISOString(), class_score:state.classScore, class_correct:state.classCorrect, class_total:state.classTotal, class_accuracy:state.classTotal?Math.round(state.classCorrect/state.classTotal*100):0, elapsed_seconds:elapsed, teams:state.teams, topic_stats:topicStats(), answers:state.answers}; }
-function download(filename,text,type='application/json'){ const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
-function downloadJson(){ download(`adme_math_touch_metrics_${Date.now()}.json`, JSON.stringify(metricsObject(),null,2)); }
-function downloadCsv(){ const rows=[['date','class','mode','round','team','question_id','stage','topic','correct','user_answer','correct_answer','question']]; const m=metricsObject(); m.answers.forEach(a=>rows.push([m.date,m.class_name,m.mode,a.round,a.team,a.id,a.stage,a.topic,a.correct,a.userAnswer,a.correctAnswer,a.question])); const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n'); download(`adme_math_touch_metrics_${Date.now()}.csv`, csv, 'text/csv'); }
-async function copySummary(){ const m=metricsObject(); const weak=m.topic_stats.filter(t=>Math.round(t.correct/t.total*100)<80).map(t=>`${t.topic} (${t.correct}/${t.total})`).join(', ') || 'None'; const top=m.teams.slice().sort((a,b)=>b.score-a.score)[0]; const text=`ADME Math Touch Summary\nClass: ${m.class_name}\nAccuracy: ${m.class_accuracy}% (${m.class_correct}/${m.class_total})\nTop squad: ${top?top.name+' '+top.score:'N/A'}\nNeeds review: ${weak}`; try{ await navigator.clipboard.writeText(text); toast('Summary copied.'); }catch(e){ toast('Copy failed. Download CSV instead.'); } }
-function previewBank(){ $('gameArea').classList.add('show'); $('setup').classList.add('hidden'); $('gameCard').classList.add('hidden'); $('dashboard').classList.remove('show'); $('bankPreview').classList.add('show'); const table=$('bankTable'); table.innerHTML='<thead><tr><th>ID</th><th>Stage</th><th>Topic</th><th>Question</th><th>Answer</th></tr></thead><tbody></tbody>'; const tb=table.querySelector('tbody'); allQuestions.forEach(q=>{ const ans=q.type==='number'?`${q.answer} ${q.unit}`:`${letters[q.answer]}. ${q.choices[q.answer]}`; const tr=document.createElement('tr'); tr.innerHTML=`<td>${q.id}</td><td>${q.stage}</td><td>${q.topic}</td><td>${q.question}</td><td>${ans}</td>`; tb.appendChild(tr); }); }
-function closePreview(){ $('bankPreview').classList.remove('show'); $('setup').classList.remove('hidden'); $('gameArea').classList.remove('show'); $('gameCard').classList.remove('hidden'); }
-function restart(){ $('dashboard').classList.remove('show'); $('gameCard').classList.remove('hidden'); $('setup').classList.remove('hidden'); $('gameArea').classList.remove('show'); $('timeNum').textContent='0:00'; window.scrollTo({top:0,behavior:'smooth'}); }
-function quitRound(){ if(confirm('End this round and show the debrief?')) finishGame(); }
-function fullscreen(){ const el=document.documentElement; if(!document.fullscreenElement) el.requestFullscreen?.(); else document.exitFullscreen?.(); }
-
-$('startBtn').addEventListener('pointerdown', startGame);
-$('revealBtn').addEventListener('pointerdown', ()=>revealAnswers(false));
-$('nextBtn').addEventListener('pointerdown', nextQuestion);
-$('hintBtn').addEventListener('pointerdown', showHint);
-$('skipBtn').addEventListener('pointerdown', skipQuestion);
-$('quitBtn').addEventListener('pointerdown', quitRound);
-$('restartBtn').addEventListener('pointerdown', restart);
-$('downloadJsonBtn').addEventListener('pointerdown', downloadJson);
-$('downloadCsvBtn').addEventListener('pointerdown', downloadCsv);
-$('copySummaryBtn').addEventListener('pointerdown', copySummary);
-$('previewBtn').addEventListener('pointerdown', previewBank);
-$('closePreviewBtn').addEventListener('pointerdown', closePreview);
-$('fullBtn').addEventListener('pointerdown', fullscreen);
-$('soundBtn').addEventListener('pointerdown', ()=>{ state.soundOn=!state.soundOn; $('soundBtn').textContent=state.soundOn?'🔊 Sound: On':'🔇 Sound: Off'; sfx('click'); });
-$('nextSquadsBtn')?.addEventListener('pointerdown', autoPickNextSquads);
-$('resetSquadsBtn')?.addEventListener('pointerdown', resetSquads);
-$('modeSelect').addEventListener('change', ()=>{ state.mode=$('modeSelect').value; $('teamCount').disabled = state.mode==='solo'; renderSquadPicker(); });
-$('teamCount').addEventListener('change', renderSquadPicker);
-renderSquadPicker();
+let stageIndex=0,qIndex=0,phase="ready",timeLeft=10,interval=null,answerStartTime=null,responses=Array(5).fill(null),gameLog=[],chainSlots=[],chainUsed=[];
+let soundEnabled=true,audioCtx=null;
+const scorebar=document.getElementById("scorebar"),playArea=document.getElementById("playArea"),qText=document.getElementById("qText"),qIcon=document.getElementById("qIcon"),timer=document.getElementById("timer"),timerLabel=document.getElementById("timerLabel"),phaseTitle=document.getElementById("phaseTitle"),phaseSmall=document.getElementById("phaseSmall"),feedback=document.getElementById("feedback"),questionNum=document.getElementById("questionNum"),questionTotal=document.getElementById("questionTotal"),stageBig=document.getElementById("stageBig"),stageSmall=document.getElementById("stageSmall"),roundLabel=document.getElementById("roundLabel");
+function currentStage(){return stages[stageIndex]} function currentQ(){return currentStage().questions[qIndex]}
+function getAudioCtx(){if(!audioCtx){audioCtx=new (window.AudioContext||window.webkitAudioContext)()} if(audioCtx.state==="suspended")audioCtx.resume(); return audioCtx}
+function tone(freq=440,duration=.08,type="sine",volume=.07,delay=0){if(!soundEnabled)return; const ctx=getAudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain(); osc.type=type; osc.frequency.setValueAtTime(freq,ctx.currentTime+delay); gain.gain.setValueAtTime(.0001,ctx.currentTime+delay); gain.gain.exponentialRampToValueAtTime(volume,ctx.currentTime+delay+.01); gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+delay+duration); osc.connect(gain); gain.connect(ctx.destination); osc.start(ctx.currentTime+delay); osc.stop(ctx.currentTime+delay+duration+.02)}
+function playTick(){tone(920,.035,"square",.035)} function playUrgentTick(){tone(1180,.045,"square",.05);tone(620,.035,"square",.035,.045)} function playPhaseChange(){tone(440,.08,"sine",.07);tone(660,.08,"sine",.07,.09);tone(880,.1,"sine",.07,.18)} function playAnswerLock(){tone(700,.05,"triangle",.065);tone(980,.06,"triangle",.055,.055)} function playCorrect(){tone(660,.08,"sine",.07);tone(880,.08,"sine",.07,.08);tone(1100,.12,"sine",.07,.16)} function playWrong(){tone(220,.11,"sawtooth",.07);tone(165,.16,"sawtooth",.065,.11)} function playRoundOver(){tone(523,.1,"triangle",.07);tone(659,.1,"triangle",.07,.1);tone(784,.1,"triangle",.07,.2);tone(1046,.24,"triangle",.07,.32)}
+function toggleSound(){soundEnabled=!soundEnabled;document.getElementById("soundBtn").textContent=soundEnabled?"🔊 SOUND":"🔇 MUTED";if(soundEnabled)playPhaseChange()} function testSounds(){if(!soundEnabled)toggleSound();playTick();setTimeout(playAnswerLock,250);setTimeout(playCorrect,600);setTimeout(playWrong,1050);setTimeout(playRoundOver,1500)}
+function renderScorebar(){scorebar.innerHTML="";squads.forEach((s,i)=>{const r=responses[i];let status="";if(r&&phase==="answer")status="LOCKED";if(r&&phase==="reveal")status=r.correct?`+${r.points}`:"MISS";const div=document.createElement("div");div.className=`score ${s.color}`;div.innerHTML=`<div class="icon">👥</div><div class="meta"><div class="name">${s.name.toUpperCase()}</div><div class="points">${s.points}</div><div class="status">${status}</div></div>`;scorebar.appendChild(div)})}
+function renderQuestion(){const s=currentStage(),q=currentQ();qText.textContent=q.text;qIcon.textContent=q.icon;questionNum.textContent=qIndex+1;questionTotal.textContent=`of ${s.questions.length}`;stageBig.textContent=`STAGE ${stageIndex+1}`;stageSmall.textContent=s.short;roundLabel.textContent=s.short.toUpperCase()}
+function renderPlayArea(){if(currentStage().type==="chain") renderChainArea(); else renderAnswers()}
+function renderAnswers(){playArea.className="play-area answers-area";playArea.innerHTML="";const choices=currentStage().choices;let gridRows=choices.length===2?"1fr 1fr":choices.length===4?"repeat(4,1fr)":"repeat(3,1fr)";squads.forEach((s,i)=>{const r=responses[i],col=document.createElement("div");col.className=`squad-column ${s.color}`;const buttons=choices.map(c=>`<div class="choice ${getChoiceClass(i,c[0])}" onpointerdown="handleChoicePointer(event, ${i}, '${c[0]}')" onclick="handleChoiceClick(event, ${i}, '${c[0]}')"><div class="abbr">${c[0]}</div><div class="full">${c[1]}</div></div>`).join("");col.innerHTML=`<div class="col-head"><div class="name">${s.name.toUpperCase()}</div><div class="rank">${r?`${r.seconds.toFixed(1)} sec`:"Awaiting answer"}</div></div><div class="answer-buttons" style="grid-template-rows:${gridRows}">${buttons}</div><div class="result">${resultText(i)}</div>`;playArea.appendChild(col)})}
+function getChoiceClass(i,choice){const r=responses[i];if(phase!=="answer"&&phase!=="reveal")return"disabled";if(!r)return"";if(r.choice!==choice)return"disabled";if(phase==="answer")return"selected";return r.correct?"correct":"wrong"}
+function resultText(i){const r=responses[i];if(phase==="ready")return`<span class="waiting">Waiting</span>`;if(phase==="huddle")return`<span class="waiting">Discuss only</span>`;if(phase==="answer"&&!r)return`<span class="waiting">Tap answer</span>`;if(phase==="answer"&&r)return`<span class="locked">Locked</span>`;if(phase==="reveal"&&r&&r.correct)return`<span class="good">Correct • +${r.points}</span>`;if(phase==="reveal"&&r&&!r.correct)return`<span class="bad">Incorrect</span>`;if(phase==="reveal"&&!r)return`<span class="bad">No answer</span>`;return""}
+function renderChainArea(){playArea.className="play-area chain-area";const q=currentQ();if(!chainSlots.length){chainSlots=Array(q.answer.length).fill(null);chainUsed=Array(q.tiles.length).fill(false)}let slots=q.answer.map((label,i)=>`<div class="slot ${chainSlots[i]?'filled':''}" onpointerdown="handleSlotPointer(event, ${i})" onclick="handleSlotClick(event, ${i})">${chainSlots[i]||label}</div>`).join("");let tiles=q.tiles.map((t,i)=>`<div class="tile ${chainUsed[i]?'used':''}" onpointerdown="handleTilePointer(event, ${i})" onclick="handleTileClick(event, ${i})">${t}</div>`).join("");playArea.innerHTML=`<div class="chain-slots">${slots}</div><div class="tile-bank">${tiles}</div>`}
+function captureTouchEvent(e){if(!e)return;if(e.cancelable)e.preventDefault();e.stopPropagation();try{if(e.currentTarget&&e.currentTarget.setPointerCapture&&e.pointerId!==undefined)e.currentTarget.setPointerCapture(e.pointerId)}catch(err){}}
+function handleChoicePointer(e,squadIndex,choice){captureTouchEvent(e);choose(squadIndex,choice,e.currentTarget)}
+function handleChoiceClick(e,squadIndex,choice){if(window.PointerEvent){if(e.cancelable)e.preventDefault();return}handleChoicePointer(e,squadIndex,choice)}
+function handleTilePointer(e,tileIndex){captureTouchEvent(e);pickTile(tileIndex,e.currentTarget)}
+function handleTileClick(e,tileIndex){if(window.PointerEvent){if(e.cancelable)e.preventDefault();return}handleTilePointer(e,tileIndex)}
+function handleSlotPointer(e,slotIndex){captureTouchEvent(e);clearChainSlot(slotIndex,e.currentTarget)}
+function handleSlotClick(e,slotIndex){if(window.PointerEvent){if(e.cancelable)e.preventDefault();return}handleSlotPointer(e,slotIndex)}
+function updateSquadColumnAfterChoice(squadIndex,selectedEl){const col=playArea.querySelectorAll(".squad-column")[squadIndex];if(!col)return;const r=responses[squadIndex];const rank=col.querySelector(".rank");if(rank&&r)rank.textContent=`${r.seconds.toFixed(1)} sec`;const result=col.querySelector(".result");if(result)result.innerHTML=resultText(squadIndex);col.querySelectorAll(".choice").forEach(btn=>{btn.classList.toggle("disabled",btn!==selectedEl);btn.classList.remove("selected")});if(selectedEl){selectedEl.classList.remove("disabled");selectedEl.classList.add("selected")}}
+function updateChainAfterPick(tileIndex,slotIndex,tileEl){const slots=document.querySelectorAll(".slot"),tiles=document.querySelectorAll(".tile");if(slots[slotIndex]){slots[slotIndex].textContent=chainSlots[slotIndex];slots[slotIndex].classList.add("filled")}if(tileEl)tileEl.classList.add("used");else if(tiles[tileIndex])tiles[tileIndex].classList.add("used")}
+function updateChainAfterClear(slotIndex,tileIndex,slotEl){const q=currentQ(),slots=document.querySelectorAll(".slot"),tiles=document.querySelectorAll(".tile");const targetSlot=slotEl||slots[slotIndex];if(targetSlot){targetSlot.textContent=q.answer[slotIndex];targetSlot.classList.remove("filled","correct","wrong")}if(tiles[tileIndex])tiles[tileIndex].classList.remove("used")}
+function pickTile(tileIndex,tileEl){if(phase!=="answer"||chainUsed[tileIndex])return;const q=currentQ();const empty=chainSlots.findIndex(x=>!x);if(empty<0)return;playAnswerLock();chainSlots[empty]=q.tiles[tileIndex];chainUsed[tileIndex]=true;updateChainAfterPick(tileIndex,empty,tileEl);if(chainSlots.every(Boolean)){clearInterval(interval);setTimeout(()=>setPhase("reveal"),350)}}
+function clearChainSlot(slotIndex,slotEl){if(phase!=="answer")return;const val=chainSlots[slotIndex];if(!val)return;const q=currentQ();const tileIndex=q.tiles.indexOf(val);if(tileIndex>=0)chainUsed[tileIndex]=false;chainSlots[slotIndex]=null;updateChainAfterClear(slotIndex,tileIndex,slotEl)}
+function setPhase(newPhase){phase=newPhase;timer.classList.remove("low");clearInterval(interval);const s=currentStage();if(phase==="ready"){timeLeft=s.huddle;timerLabel.textContent="READY";phaseTitle.textContent="READY";phaseSmall.textContent=`Stage ${stageIndex+1} • Q ${qIndex+1}/${s.questions.length}`} if(phase==="huddle"){playPhaseChange();responses=Array(5).fill(null);if(s.type==="chain"){chainSlots=[];chainUsed=[]}timeLeft=s.huddle;timerLabel.textContent="HUDDLE";phaseTitle.textContent="HUDDLE";phaseSmall.textContent=`${s.huddle} seconds`;feedback.textContent=s.type==="chain"?"Final Boss huddle: squads plan the reasoning chain. One class build happens on screen.":"Huddle only. All squads discuss. Runners do not touch the screen yet."} if(phase==="answer"){playPhaseChange();timeLeft=s.answerTime;timerLabel.textContent="ANSWER";phaseTitle.textContent=s.type==="chain"?"BUILD":"ANSWER";phaseSmall.textContent=`${s.answerTime} seconds`;answerStartTime=performance.now();feedback.textContent=s.type==="chain"?"Build the chain by tapping tiles in the correct order. Faster complete chains earn more points.":"All five runners answer now. Faster correct answers earn more points."} if(phase==="reveal"){playRoundOver();timerLabel.textContent="RESULTS";phaseTitle.textContent="RESULTS";phaseSmall.textContent=`Correct: ${displayAnswer(currentQ().answer)}`;feedback.innerHTML=`Correct answer: <strong>${displayAnswer(currentQ().answer)}</strong>. ${currentQ().why}`;scoreQuestion()} updateTimer();renderScorebar();renderPlayArea()}
+function displayAnswer(ans){return Array.isArray(ans)?ans.join(" → "):ans}
+function updateTimer(){timer.textContent=String(timeLeft).padStart(2,"0");timer.classList.toggle("low",timeLeft<=5)}
+function startGame(){if(phase==="ready"||phase==="reveal")setPhase("huddle");clearInterval(interval);interval=setInterval(()=>{timeLeft--;updateTimer();if(timeLeft>0){if(timeLeft<=5)playUrgentTick();else playTick()} if(timeLeft<=0){clearInterval(interval);if(phase==="huddle"){setPhase("answer");startGame()}else if(phase==="answer"){setPhase("reveal")}}},1000)}
+function pauseGame(){clearInterval(interval)}
+function choose(squadIndex,choice,selectedEl){if(phase!=="answer"||currentStage().type==="chain"||responses[squadIndex])return;playAnswerLock();const elapsed=Math.min(currentStage().answerTime,(performance.now()-answerStartTime)/1000),correct=choice===currentQ().answer;responses[squadIndex]={choice,seconds:elapsed,correct,points:0,scored:false};renderScorebar();updateSquadColumnAfterChoice(squadIndex,selectedEl);if(responses.filter(Boolean).length===5){clearInterval(interval);setTimeout(()=>setPhase("reveal"),400)}}
+function scoreQuestion(){if(currentStage().type==="chain"){scoreChain();return}const anyCorrect=responses.some(r=>r&&r.correct),anyWrong=responses.some(r=>r&&!r.correct);if(anyCorrect)setTimeout(playCorrect,350);else if(anyWrong)setTimeout(playWrong,350);responses.forEach((r,i)=>{if(!r||r.scored)return;if(r.correct){r.points=Math.max(300,Math.round(1000-(r.seconds*35)));squads[i].points+=r.points}else r.points=0;r.scored=true});logQuestion();renderScorebar();renderPlayArea()}
+function scoreChain(){const q=currentQ(),elapsed=Math.min(currentStage().answerTime,(performance.now()-answerStartTime)/1000),correct=JSON.stringify(chainSlots)===JSON.stringify(q.answer),points=correct?Math.max(500,Math.round(1500-(elapsed*22))):0;if(correct){playCorrect();squads.forEach(s=>s.points+=Math.round(points/5))}else playWrong();gameLog.push({timestamp:new Date().toISOString(),stageNumber:stageIndex+1,stage:currentStage().name,questionNumber:qIndex+1,question:q.text,topic:q.topic,correctAnswer:q.answer.join(" > "),squad:"CLASS",selectedAnswer:chainSlots.join(" > "),correct:String(correct),responseSeconds:Number(elapsed.toFixed(2)),points:points});renderScorebar();renderChainReveal(correct)}
+function renderChainReveal(correct){const q=currentQ();chainSlots.forEach((v,i)=>{});renderChainArea();document.querySelectorAll(".slot").forEach((el,i)=>{el.classList.add(chainSlots[i]===q.answer[i]?"correct":"wrong")})}
+function logQuestion(){const q=currentQ();responses.forEach((r,i)=>{gameLog.push({timestamp:new Date().toISOString(),stageNumber:stageIndex+1,stage:currentStage().name,questionNumber:qIndex+1,question:q.text,topic:q.topic,correctAnswer:q.answer,squad:squads[i].name,selectedAnswer:r?r.choice:"NO_ANSWER",correct:r?String(r.correct):"false",responseSeconds:r?Number(r.seconds.toFixed(2)):"",points:r?r.points:0})})}
+function nextQuestion(){clearInterval(interval);if(phase==="answer"){setPhase("reveal");return}qIndex++;if(qIndex>=currentStage().questions.length){if(stageIndex<stages.length-1){showModal("Stage Complete",`Stage ${stageIndex+1}: ${currentStage().name} is complete.<br><br>Press STAGE to move forward.`)}else showFinal();qIndex=currentStage().questions.length-1;return}responses=Array(5).fill(null);chainSlots=[];chainUsed=[];renderQuestion();setPhase("ready");feedback.textContent="Press START for the next huddle."}
+function nextStage(){clearInterval(interval);if(stageIndex>=stages.length-1){showFinal();return}stageIndex++;qIndex=0;responses=Array(5).fill(null);chainSlots=[];chainUsed=[];renderQuestion();setPhase("ready");feedback.textContent=`Stage ${stageIndex+1}: ${currentStage().name}. Press START.`}
+function resetGame(){clearInterval(interval);squads.forEach(s=>s.points=0);stageIndex=0;qIndex=0;responses=Array(5).fill(null);chainSlots=[];chainUsed=[];gameLog=[];renderQuestion();setPhase("ready");feedback.textContent="Press START. Full 6-stage A.D.M.E. Arena is ready."}
+function showFinal(){const ranked=[...squads].sort((a,b)=>b.points-a.points),rows=ranked.map((s,i)=>`${i+1}. ${s.name}: ${s.points} pts`).join("<br>");showModal("Game Complete",rows+"<br><br>Use CSV or JSON to review weak topics and squad metrics.")}
+function showHelp(){showModal("How This Works","Each stage uses a 10-second huddle and timed answer race unless listed otherwise. Most stages use five squad columns so multiple runners can answer together. Final Boss uses a shared chain-building board. CSV/JSON exports track response time, accuracy, points, stage, topic, and review-needed metrics.")}
+function showModal(title,text){document.getElementById("modalTitle").innerHTML=title;document.getElementById("modalText").innerHTML=text;document.getElementById("modal").classList.add("show")}function closeModal(){document.getElementById("modal").classList.remove("show")}
+function buildSummary(){const byTopic={};gameLog.forEach(row=>{const key=`${row.stage} | ${row.topic}`;const t=byTopic[key]||(byTopic[key]={stage:row.stage,topic:row.topic,attempts:0,correct:0,totalSeconds:0});t.attempts++;if(row.correct==="true")t.correct++;if(row.responseSeconds!=="")t.totalSeconds+=Number(row.responseSeconds)});Object.keys(byTopic).forEach(k=>{const t=byTopic[k];t.accuracy=t.attempts?Number(((t.correct/t.attempts)*100).toFixed(1)):0;t.avgSeconds=t.attempts?Number((t.totalSeconds/t.attempts).toFixed(2)):0;t.reviewNeeded=t.accuracy<70?"YES":"NO"});return byTopic}
+function downloadCSV(){const summary=buildSummary();let rows=[["TYPE","Timestamp","Stage #","Stage","Question #","Question","Topic","Correct Answer","Squad","Selected Answer","Correct","Response Seconds","Points","Topic Accuracy %","Review Needed"]];gameLog.forEach(r=>{const s=summary[`${r.stage} | ${r.topic}`]||{};rows.push(["ANSWER",r.timestamp,r.stageNumber,r.stage,r.questionNumber,r.question,r.topic,r.correctAnswer,r.squad,r.selectedAnswer,r.correct,r.responseSeconds,r.points,s.accuracy??"",s.reviewNeeded??""])});Object.keys(summary).forEach(k=>{const s=summary[k];rows.push(["SUMMARY","","",s.stage,"","",s.topic,"","","",`${s.correct}/${s.attempts}`,s.avgSeconds,"",s.accuracy,s.reviewNeeded])});const csv=rows.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");downloadFile(csv,"adme_arena_complete_metrics.csv","text/csv")}
+function downloadJSON(){const data={exportedAt:new Date().toISOString(),game:"A.D.M.E. Arena",squads,stages:stages.map((s,i)=>({number:i+1,name:s.name,type:s.type,questions:s.questions})),answers:gameLog,topicSummary:buildSummary()};downloadFile(JSON.stringify(data,null,2),"adme_arena_complete_metrics.json","application/json")}
+function downloadFile(content,filename,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},300)}
+renderQuestion();setPhase("ready");renderScorebar();renderPlayArea();
 </script>
 </body>
 </html>
