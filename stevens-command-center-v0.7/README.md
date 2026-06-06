@@ -16,6 +16,14 @@ Then visit:
 http://127.0.0.1:8027/
 ```
 
+Optional layout tuning mode:
+
+```text
+http://127.0.0.1:8027/?tune=1
+```
+
+Use tuning mode to temporarily adjust layout proportions in the browser and copy the exported JSON for hard-coding later.
+
 ## GitHub Pages
 
 If this folder is placed at the root of a GitHub repository, GitHub Pages can serve it as a static site from the repository's default branch.
@@ -25,4 +33,5 @@ If this folder is placed at the root of a GitHub repository, GitHub Pages can se
 - `index.html` - app shell
 - `assets/css/styles.css` - dashboard, print, responsive, and game styling
 - `assets/js/app.js` - A/B rotation, tabs, timer, room energy, games, print prep, and debrief logic
+- `assets/img/laredo-ems-logo-shield.png` - Laredo College EMS shield used wherever an EMS mark is needed
 - `NOTES.md` - rebuild notes, verification, and known follow-ups

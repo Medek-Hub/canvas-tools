@@ -93,7 +93,7 @@
         targets: ["Differentiate asthma vs anaphylaxis", "Avoid single-symptom anchoring", "Justify medication selection"]
       },
       {
-        minutes: 15,
+        minutes: 10,
         type: "break",
         title: "Reset Break",
         sub: "Large center timer + calm sound",
@@ -207,7 +207,7 @@
         targets: ["Practice setup", "Compare route logic", "Document reassessment"]
       },
       {
-        minutes: 15,
+        minutes: 10,
         type: "break",
         title: "Reset Break",
         sub: "Large center timer + pharm flag animation",
@@ -292,6 +292,19 @@
     break: "Break Screen"
   };
 
+  const classStartMinutes = (9 * 60) + 30;
+  const classEndMinutes = 12 * 60;
+  const layoutTuningKey = "stevens-command-center-layout-tuning-v0.7";
+  const layoutControls = [
+    { key: "sidebarWidth", label: "Sidebar", variable: "--sidebar-width", min: 200, max: 280, defaultValue: 224 },
+    { key: "logoBox", label: "Logo box", variable: "--logo-box", min: 78, max: 150, defaultValue: 112 },
+    { key: "logoImage", label: "Logo image", variable: "--logo-img", min: 74, max: 146, defaultValue: 108 },
+    { key: "previewWidth", label: "Preview", variable: "--preview-column-width", min: 260, max: 360, defaultValue: 302 },
+    { key: "rightRail", label: "Right rail", variable: "--right-column-width", min: 285, max: 380, defaultValue: 330 },
+    { key: "timerButtons", label: "Timer buttons", variable: "--timer-controls-width", min: 118, max: 210, defaultValue: 154 },
+    { key: "appGap", label: "Main gap", variable: "--app-gap", min: 8, max: 28, defaultValue: 18 }
+  ];
+
   const resources = [
     ["Clinical Reference", "NCBI Bookshelf: Anaphylaxis", "https://www.ncbi.nlm.nih.gov/books/NBK482124/"],
     ["Clinical Reference", "NCBI Bookshelf: Albuterol", "https://www.ncbi.nlm.nih.gov/books/NBK482272/"],
@@ -305,20 +318,20 @@
     green: {
       label: "Good",
       summary: "Keep the momentum going.",
-      helpTitle: "Green help",
-      help: "Stay with the current plan. Use quick checks, keep squads writing, and let the timer carry the pace."
+      helpTitle: "Momentum",
+      help: "Stay on plan. Keep squads writing and let the timer carry pace."
     },
     yellow: {
       label: "Watch",
       summary: "Energy is drifting.",
-      helpTitle: "Yellow help",
-      help: "Shorten the task, ask for one squad defense, or switch to a card sort before attention drops further."
+      helpTitle: "Adjust",
+      help: "Shorten the task or ask one squad to defend a finding."
     },
     red: {
       label: "Reset",
       summary: "Pause and recover the room.",
-      helpTitle: "Red help",
-      help: "Stop the current flow, name the confusion, and use Pivot Menu: Reset the Room or Add Challenge."
+      helpTitle: "Recover",
+      help: "Pause, name the confusion, then use a reset pivot."
     }
   };
 
@@ -402,6 +415,7 @@
     remainingSeconds: (9 * 60) + 34,
     sound: true,
     roomEnergy: "green",
+    agendaOpen: false,
     usedPrompts: new Set(),
     debriefText: "",
     game: {
@@ -462,6 +476,33 @@
     return `${mins}:${secs}`;
   }
 
+  function formatClockTime(totalMinutes) {
+    const normalized = ((totalMinutes % (24 * 60)) + (24 * 60)) % (24 * 60);
+    const hour24 = Math.floor(normalized / 60);
+    const mins = normalized % 60;
+    const suffix = hour24 >= 12 ? "PM" : "AM";
+    const hour12 = hour24 % 12 || 12;
+    return `${hour12}:${String(mins).padStart(2, "0")} ${suffix}`;
+  }
+
+  function scheduleEntries() {
+    let elapsed = 0;
+    return currentFlow().map((item, index) => {
+      const start = classStartMinutes + elapsed;
+      const end = start + item.minutes;
+      elapsed += item.minutes;
+      return {
+        item,
+        index,
+        start,
+        end,
+        startLabel: formatClockTime(start),
+        endLabel: formatClockTime(end),
+        label: item.type === "break" ? `10 min break at ${formatClockTime(start)}` : formatClockTime(start)
+      };
+    });
+  }
+
   function syncTimerDisplay() {
     document.querySelectorAll("[data-timer]").forEach((node) => {
       node.textContent = formatTime(state.remainingSeconds);
@@ -519,6 +560,9 @@
     } else if (state.tab === "debrief") {
       content.innerHTML = renderDebrief();
     }
+    if (state.agendaOpen) {
+      content.insertAdjacentHTML("beforeend", fullAgendaHTML());
+    }
     hydrateIcons(content);
     syncTimerDisplay();
   }
@@ -527,7 +571,7 @@
     const cls = withChecks ? ' class="check-list"' : "";
     return `<ul${cls}>${items.map((item) => {
       if (withChecks) {
-        return `<li><span class="check-dot">✓</span><span>${escapeHTML(item)}</span></li>`;
+        return `<li><span class="check-dot">&#10003;</span><span>${escapeHTML(item)}</span></li>`;
       }
       return `<li>${escapeHTML(item)}</li>`;
     }).join("")}</ul>`;
@@ -563,10 +607,6 @@
                   <div class="timer-controls">
                     <button class="btn btn-teal" type="button" data-action="${state.running ? "timer-pause" : "timer-start"}"><span data-icon="${state.running ? "pause" : "play"}"></span>${state.running ? "Pause Timer" : "Start Timer"}</button>
                     <button class="btn btn-ghost" type="button" data-action="timer-reset"><span data-icon="reset"></span>Reset Timer</button>
-                    <div class="timer-inline">
-                      <button class="btn btn-ghost" type="button" data-action="prev-activity"><span data-icon="left"></span>Back</button>
-                      <button class="btn btn-primary" type="button" data-action="next-activity">Next<span data-icon="right"></span></button>
-                    </div>
                   </div>
                 </div>
 
@@ -606,7 +646,7 @@
                   <h2>${escapeHTML(handoutNames[activity.handout] || "Activity Sheet")}</h2>
                 </div>
                 <div class="preview-frame">
-                  ${handoutHTML(activity.handout)}
+                  ${dashboardPreviewHTML(activity)}
                 </div>
                 <div class="preview-actions">
                   <div class="pager">
@@ -676,7 +716,7 @@
         <section class="widget">
           <div class="widget-head"><h3><span data-icon="student"></span>Upcoming Agenda</h3></div>
           <div class="agenda-list">${agendaHTML()}</div>
-          <button class="btn btn-ghost btn-block" type="button" data-action="set-tab" data-tab="prep">View Full Agenda<span data-icon="right"></span></button>
+          <button class="btn btn-ghost btn-block" type="button" data-action="show-agenda">View Full Agenda<span data-icon="right"></span></button>
         </section>
 
         <section class="widget">
@@ -717,18 +757,102 @@
   }
 
   function agendaHTML() {
-    let elapsed = 0;
-    return currentFlow().map((item, index) => {
-      const label = index === state.activityIndex ? "Now" : `+${elapsed}m`;
-      elapsed += item.minutes;
-      return `
+    const entries = scheduleEntries();
+    const start = Math.min(state.activityIndex, Math.max(0, entries.length - 4));
+    return entries.slice(start, start + 4).map(({ item, index, label }) => `
         <div class="agenda-item">
           <time>${label}</time>
           <strong title="${escapeHTML(item.title)}">${escapeHTML(item.title)}</strong>
           ${index === state.activityIndex ? '<span class="pill">Live</span>' : "<span></span>"}
         </div>
+      `).join("");
+  }
+
+  function fullAgendaHTML() {
+    const entries = scheduleEntries();
+    const usedMinutes = entries.length ? entries[entries.length - 1].end - classStartMinutes : 0;
+    const bufferMinutes = Math.max(0, classEndMinutes - classStartMinutes - usedMinutes);
+    return `
+      <div class="modal-backdrop" role="presentation" data-action="hide-agenda">
+        <section class="agenda-modal" role="dialog" aria-modal="true" aria-labelledby="agendaTitle">
+          <header class="agenda-modal-head">
+            <div>
+              <p class="panel-kicker">Full Agenda</p>
+              <h2 id="agendaTitle">Week 2 Class Schedule</h2>
+              <p>Group ${escapeHTML(state.group)} (${escapeHTML(groupLabel())}) | ${formatClockTime(classStartMinutes)} - ${formatClockTime(classEndMinutes)}</p>
+            </div>
+            <button class="btn btn-ghost" type="button" data-action="hide-agenda" aria-label="Close full agenda">Close</button>
+          </header>
+          <div class="agenda-full-list">
+            ${entries.map(({ item, index, startLabel, endLabel, label }) => `
+              <article class="agenda-full-item ${index === state.activityIndex ? "live" : ""}">
+                <time>${escapeHTML(label)}</time>
+                <div>
+                  <strong>${escapeHTML(item.title)}</strong>
+                  <span>${escapeHTML(item.sub)} | ${escapeHTML(startLabel)} - ${escapeHTML(endLabel)}</span>
+                </div>
+                ${index === state.activityIndex ? '<span class="pill">Live</span>' : ""}
+              </article>
+            `).join("")}
+            <article class="agenda-full-item buffer">
+              <time>${formatClockTime(entries.length ? entries[entries.length - 1].end : classStartMinutes)}</time>
+              <div>
+                <strong>Instructor buffer / transition</strong>
+                <span>${bufferMinutes} minutes available before noon for discussion, cleanup, or remediation.</span>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    `;
+  }
+
+  function dashboardPreviewHTML(activity) {
+    if (activity.handout === "diff") {
+      return `
+        <article class="scenario-card-preview">
+          <header class="scenario-preview-head">
+            <strong>Asthma or Anaphylaxis?<br>Differentiation Challenge</strong>
+            <span data-icon="stethoscope"></span>
+          </header>
+          <section class="scenario-preview-body">
+            <h4>Scenario</h4>
+            <p>A 27-year-old female presents with shortness of breath, wheezing, and hives after eating a granola bar 10 minutes ago.</p>
+            <h4>Vitals</h4>
+            <ul>
+              <li>BP: 122/68</li>
+              <li>HR: 128</li>
+              <li>RR: 28</li>
+              <li>SpO2: 96% RA</li>
+            </ul>
+            <h4>Assessment Findings</h4>
+            <ul>
+              <li>Diffuse wheezing and chest tightness</li>
+              <li>Urticaria on arms and chest</li>
+              <li>Swelling of lips</li>
+              <li>Patient anxious, restless</li>
+            </ul>
+          </section>
+          <footer class="scenario-preview-foot">Determine: Asthma exacerbation or anaphylaxis?</footer>
+        </article>
       `;
-    }).join("");
+    }
+
+    return `
+      <article class="scenario-card-preview">
+        <header class="scenario-preview-head">
+          <strong>${escapeHTML(handoutNames[activity.handout] || activity.title)}</strong>
+          <span data-icon="${activity.icon}"></span>
+        </header>
+        <section class="scenario-preview-body">
+          <h4>Student Task</h4>
+          ${listItems(activity.task.slice(0, 4), false)}
+          <h4>Instructor Focus</h4>
+          <p>${escapeHTML(activity.kai)}</p>
+        </section>
+        <footer class="scenario-preview-foot">${escapeHTML(activity.sub)}</footer>
+      </article>
+    `;
   }
 
   function renderStudent() {
@@ -1160,6 +1284,104 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
     return `<div class="field-row">${fields.map((field) => `<div class="field">${escapeHTML(field)}<div class="line"></div></div>`).join("")}</div>`;
   }
 
+  function layoutTuningEnabled() {
+    const params = new URLSearchParams(window.location.search);
+    return params.has("tune") || window.location.hash.toLowerCase().includes("tune");
+  }
+
+  function defaultLayoutTuning() {
+    return Object.fromEntries(layoutControls.map((control) => [control.key, control.defaultValue]));
+  }
+
+  function readLayoutTuning() {
+    try {
+      return { ...defaultLayoutTuning(), ...JSON.parse(localStorage.getItem(layoutTuningKey) || "{}") };
+    } catch {
+      return defaultLayoutTuning();
+    }
+  }
+
+  function applyLayoutTuning(values) {
+    layoutControls.forEach((control) => {
+      const value = Number(values[control.key]);
+      if (Number.isFinite(value)) {
+        document.documentElement.style.setProperty(control.variable, `${value}px`);
+      }
+    });
+  }
+
+  function updateLayoutTunerOutput(values) {
+    const textarea = document.querySelector("[data-tuner-json]");
+    if (textarea) {
+      textarea.value = JSON.stringify(values, null, 2);
+    }
+    layoutControls.forEach((control) => {
+      const output = document.querySelector(`[data-tuner-output="${control.key}"]`);
+      if (output) {
+        output.textContent = `${values[control.key]}px`;
+      }
+    });
+  }
+
+  function writeLayoutTuning(values) {
+    localStorage.setItem(layoutTuningKey, JSON.stringify(values));
+    applyLayoutTuning(values);
+    updateLayoutTunerOutput(values);
+  }
+
+  function renderLayoutTuner() {
+    if (!layoutTuningEnabled()) {
+      return;
+    }
+    const values = readLayoutTuning();
+    applyLayoutTuning(values);
+    const panel = document.createElement("aside");
+    panel.className = "layout-tuner";
+    panel.setAttribute("aria-label", "Layout tuning controls");
+    panel.innerHTML = `
+      <p class="panel-kicker">Layout Tuner</p>
+      <h2>Dashboard Proportions</h2>
+      <p>Temporary browser-only controls. Copy the JSON and send it back so I can hard-code the winning layout.</p>
+      ${layoutControls.map((control) => `
+        <div class="tuner-row">
+          <label for="tune-${control.key}">${escapeHTML(control.label)}</label>
+          <input id="tune-${control.key}" type="range" min="${control.min}" max="${control.max}" value="${values[control.key]}" data-tuner="${control.key}">
+          <output data-tuner-output="${control.key}">${values[control.key]}px</output>
+        </div>
+      `).join("")}
+      <div class="layout-tuner-actions">
+        <button class="btn btn-primary" type="button" data-tuner-action="copy">Copy JSON</button>
+        <button class="btn btn-ghost" type="button" data-tuner-action="reset">Reset</button>
+        <button class="btn btn-ghost" type="button" data-tuner-action="hide">Hide</button>
+      </div>
+      <textarea readonly data-tuner-json>${escapeHTML(JSON.stringify(values, null, 2))}</textarea>
+    `;
+    document.body.appendChild(panel);
+  }
+
+  function handleLayoutTunerInput(target) {
+    const values = readLayoutTuning();
+    values[target.dataset.tuner] = Number(target.value);
+    writeLayoutTuning(values);
+  }
+
+  function handleLayoutTunerAction(action) {
+    if (action === "copy") {
+      const values = readLayoutTuning();
+      const text = JSON.stringify(values, null, 2);
+      navigator.clipboard?.writeText(text);
+      updateLayoutTunerOutput(values);
+    } else if (action === "reset") {
+      const values = defaultLayoutTuning();
+      writeLayoutTuning(values);
+      document.querySelectorAll("[data-tuner]").forEach((input) => {
+        input.value = values[input.dataset.tuner];
+      });
+    } else if (action === "hide") {
+      document.querySelector(".layout-tuner")?.remove();
+    }
+  }
+
   function resetTimerForActivity(remainingOverride) {
     const seconds = currentActivity().minutes * 60;
     setTimer(seconds, remainingOverride);
@@ -1406,6 +1628,7 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
     } else if (action === "set-day") {
       setDay(Number(target.dataset.day));
     } else if (action === "set-tab") {
+      state.agendaOpen = false;
       state.tab = target.dataset.tab;
       render();
       $("content").focus({ preventScroll: true });
@@ -1434,7 +1657,14 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
       render();
     } else if (action === "show-hint") {
       showHint();
+    } else if (action === "show-agenda") {
+      state.agendaOpen = true;
+      render();
+    } else if (action === "hide-agenda") {
+      state.agendaOpen = false;
+      render();
     } else if (action === "open-sheet") {
+      state.agendaOpen = false;
       state.selectedSheet = target.dataset.sheet;
       state.tab = "prep";
       render();
@@ -1480,8 +1710,18 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
   }
 
   document.addEventListener("click", (event) => {
+    const tunerTarget = event.target.closest("[data-tuner-action]");
+    if (tunerTarget) {
+      event.preventDefault();
+      handleLayoutTunerAction(tunerTarget.dataset.tunerAction);
+      return;
+    }
+
     const actionTarget = event.target.closest("[data-action]");
     if (!actionTarget) {
+      return;
+    }
+    if (actionTarget.dataset.action === "hide-agenda" && event.target.closest(".agenda-modal") && !event.target.closest("button")) {
       return;
     }
     const action = actionTarget.dataset.action;
@@ -1493,6 +1733,10 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
 
   document.addEventListener("input", (event) => {
     const target = event.target;
+    if (target.matches("[data-tuner]")) {
+      handleLayoutTunerInput(target);
+      return;
+    }
     if (target.matches("[data-action='confidence']")) {
       state.game.confidence = Number(target.value);
       const output = $("confidenceValue");
@@ -1508,4 +1752,5 @@ Week 2 Group ${state.group} Day ${state.day} debrief:
   hydrateIcons(document);
   buildPrintArea();
   render();
+  renderLayoutTuner();
 })();

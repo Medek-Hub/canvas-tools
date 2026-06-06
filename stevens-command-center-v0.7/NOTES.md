@@ -12,6 +12,18 @@
   - clinical blue/teal accents
   - separate center activity card and handout/activity card
   - right dashboard column with Room Energy, Upcoming Agenda, Quick Pivot, Printable Materials, and Encouragement
+- Replaced the placeholder EMS mark with the provided Laredo College EMS shield asset:
+  - `assets/img/laredo-ems-logo-shield.png`
+  - top-left logo size increased for stronger sidebar presence
+- Rebalanced the instructor dashboard toward the reference proportions:
+  - wider center activity column
+  - narrower handout/activity preview column
+  - timer reduced to the reference-style two-button control stack
+  - hidden dashboard scrollbars in instructor view
+- Added an opt-in layout tuning mode:
+  - open `index.html?tune=1` or `http://127.0.0.1:8027/?tune=1`
+  - adjust sidebar width, logo size, preview width, right rail width, timer button width, and main gap
+  - copy exported JSON so the chosen proportions can be hard-coded later
 - Preserved the A/B rotation:
   - Group A = Monday/Tuesday
   - Group B = Wednesday/Thursday
@@ -43,21 +55,28 @@
   - gauge needle movement
   - state-specific help prompt
   - red-state pivot help action
+- Fixed Upcoming Agenda behavior:
+  - View Full Agenda now opens a dashboard agenda modal instead of Print & Prep
+  - schedule starts at 9:30 AM and runs to noon
+  - break rows now display as `10 min break at [time]`
 - Improved responsive behavior for laptop, classroom display, and large fullscreen widths.
 
 ## Verification performed
 
 - `node --check assets/js/app.js` passed.
-- Browser checked at 1536x960 and 1920x1080 dashboard-style viewports.
-- Browser checked at 1366x768 laptop viewport.
+- Browser checked at 1536x960 dashboard-style viewport after the visual rebalance.
+- Browser checked at 1366x768 laptop viewport during earlier timer-button work.
+- Confirmed local server returns the prototype at `http://127.0.0.1:8027/`.
 - Confirmed no horizontal overflow in instructor, student, games, and print-prep views.
 - Confirmed Group B changes day labels to Wed/Thu and Day 2 loads the second-day flow.
 - Confirmed the game stage answer loop updates score, locks choices, and creates a metrics row.
 - Confirmed Room Energy yellow/red selections change status and help text.
+- Confirmed `View Full Agenda` opens the full agenda modal with clock-time schedule and stays on the dashboard URL.
+- Confirmed `node --check assets/js/app.js` passed after adding the layout tuner.
 
 ## Still needs improvement
 
 - Course content was intentionally not rewritten yet; v0.7 focuses on visual fidelity, stability, and UX.
 - The in-app browser does not support file downloads, so the metrics JSON save dialog should be verified in a normal browser.
-- The right dashboard column can still scroll on shorter screens because it keeps all required widgets visible and intact.
+- The dashboard is much closer to the reference, but final pixel matching still needs one human visual pass on the actual Clear Touch/laptop display.
 - Future versions should connect real printable PDFs or source-of-truth course documents if those exist outside this prototype.
