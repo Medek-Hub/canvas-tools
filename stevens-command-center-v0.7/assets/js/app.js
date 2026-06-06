@@ -628,13 +628,6 @@
                     <h3><span data-icon="sparkle"></span> Kai Coach Tip</h3>
                     <p>${escapeHTML(activity.kai)}</p>
                   </article>
-                  <article class="coach-card stuck">
-                    <div>
-                      <h3><span data-icon="lightbulb"></span> If Students Get Stuck</h3>
-                      ${listItems(activity.stuck, false)}
-                    </div>
-                    <button class="btn btn-warning" type="button" data-action="show-hint"><span data-icon="lightbulb"></span>Show Hint Prompt</button>
-                  </article>
                 </div>
               </div>
             </article>
@@ -723,7 +716,7 @@
           <div class="widget-head"><h3><span data-icon="shuffle"></span>Quick Pivot</h3></div>
           <div class="quick-pivot-grid">
             <button class="btn btn-ghost" type="button" data-action="shorten-activity"><span data-icon="clock"></span>Shorten Activity</button>
-            <button class="btn btn-ghost" type="button" data-action="set-tab" data-tab="games"><span data-icon="flame"></span>Add Challenge</button>
+            <button class="btn btn-ghost" type="button" data-action="set-tab" data-tab="games"><span class="emoji-icon" aria-hidden="true">&#128293;</span>Add Challenge</button>
             <button class="btn btn-ghost" type="button" data-action="set-tab" data-tab="resources"><span data-icon="book"></span>Review Core</button>
             <button class="btn btn-ghost" type="button" data-action="set-tab" data-tab="pivot"><span data-icon="users"></span>Change Format</button>
           </div>

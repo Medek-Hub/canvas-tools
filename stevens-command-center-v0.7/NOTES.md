@@ -31,6 +31,18 @@
   - right rail: 317px
   - timer buttons: 138px
   - main gap: 19px
+- Matched the left navigation art style to the provided sidebar reference:
+  - inactive nav items now render as plain white icon + label rows with no surrounding boxes
+  - active nav item remains the blue rounded gradient pill
+  - Student View uses the same people-style icon treatment as the reference
+  - Resources remains available through guide/focus links but is no longer shown in the left rail
+- Restored the colorful fire emoji on Quick Pivot > Add Challenge.
+- Made the bottom learning-target/focus/materials panels stronger visual callouts with blue outlines, blue text treatment, and subtle blue-tinted surfaces.
+- Reworked the current activity card to match the timer reference organization:
+  - title row
+  - wide timer band with only Pause/Start and Reset controls
+  - current task panel directly below
+  - two coach cards below the task panel
 - Preserved the A/B rotation:
   - Group A = Monday/Tuesday
   - Group B = Wednesday/Thursday
